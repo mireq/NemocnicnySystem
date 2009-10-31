@@ -42,56 +42,7 @@ template < typename KeyT,
 	template < typename T, typename U > class ComparatorT >
 void AVLTree<KeyT, DataT, ComparatorT >::insert(const DataT &data)
 {
-	using namespace std;
-
-	AVLNodePtr *parent = NULL;
-	AVLNodePtr *node = &m_rootNode;
-	std::list<AVLNodePtr *> path;
-	path.push_back(node);
-	while (*node != NULL) {
-		parent = node;
-		int comp_val = m_comp(data, (*node)->data);
-		if (comp_val < 0) {
-			node = &(*node)->left;
-		}
-		else if (comp_val > 0) {
-			node = &(*node)->right;
-		}
-		else {
-			if ((*node)->right == NULL) {
-				node = &(*node)->right;
-			}
-			else {
-				node = &(*node)->left;
-			}
-		}
-		path.push_back(node);
-	}
-
-	AVLNodePtr *child = NULL;
-	for (typename std::list<AVLNodePtr *>::reverse_iterator it = path.rbegin(); it != path.rend(); ++it) {
-		AVLNodePtr *node = *it;
-		if (*node == NULL) {
-			*node = new AVLNode(data);
-		}
-		else {
-			signed char oldBalance = (*node)->balance;
-			if ((*node)->right == *child) {
-				(*node)->balance++;
-			}
-			else {
-				(*node)->balance--;
-			}
-			if (abs(oldBalance) >= abs((*node)->balance)) {
-				return;
-			}
-			if ((*node)->balance == 2 || (*node)->balance == -2) {
-				rebalance(*node);
-				return;
-			}
-		}
-		child = node;
-	}
+	insertIntoSubTree(m_rootNode, data);
 }
 
 
@@ -223,6 +174,58 @@ bool AVLTree<KeyT, DataT, ComparatorT >::rotateLR(AVLNodePtr &root)
 	root = successor;
 
 	return true;
+}
+
+
+template < typename KeyT,
+	typename DataT,
+	template < typename T, typename U > class ComparatorT >
+bool AVLTree<KeyT, DataT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const DataT &data)
+{
+	if (node == NULL) {
+		node = new AVLNode(data);
+		return true;
+	}
+
+	int comp_val = m_comp(data, node->data);
+	int direction;
+	if (comp_val < 0) {
+		direction = -1;
+	}
+	else if (comp_val > 0) {
+		direction = 1;
+	}
+	else {
+		if (node->right == NULL) {
+			direction = 1;
+		}
+		else {
+			direction = -1;
+		}
+	}
+
+	signed char oldBalance = node->balance;
+	bool balanceUp;
+	if (direction == -1) {
+		balanceUp = insertIntoSubTree(node->left, data);
+	}
+	else {
+		balanceUp = insertIntoSubTree(node->right, data);
+	}
+	if (balanceUp) {
+		node->balance += direction;
+	}
+
+	if (node->balance == 2 || node->balance == -2) {
+		rebalance(node);
+		return false;
+	}
+	else {
+		if (abs(oldBalance) < abs(node->balance)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 

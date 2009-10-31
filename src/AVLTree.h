@@ -96,6 +96,7 @@ private:
 	bool rotateR(AVLNodePtr &root);
 	bool rotateRL(AVLNodePtr &root);
 	bool rotateLR(AVLNodePtr &root);
+	bool insertIntoSubTree(AVLNode * &node, const DataT &data);
 	std::pair<bool, DataT *> removeFromSubTree(AVLNode * &node, const DataT &data, bool &changeHeight, int sType);
 
 	void printSubTree(AVLNode *node, int depth);
