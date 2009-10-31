@@ -42,98 +42,55 @@ template < typename KeyT,
 	template < typename T, typename U > class ComparatorT >
 void AVLTree<KeyT, DataT, ComparatorT >::insert(const DataT &data)
 {
-	AVLNodePtr parent = NULL;
-	AVLNodePtr node   = m_rootNode;
-	bool       left   = true;
-	std::list<std::pair<bool, AVLNode *> > nodeStack;
+	using namespace std;
 
-	// Nájdenie mietsa pre vloženie
-	while (node != NULL) {
+	AVLNodePtr *parent = NULL;
+	AVLNodePtr *node = &m_rootNode;
+	std::list<AVLNodePtr *> path;
+	path.push_back(node);
+	while (*node != NULL) {
 		parent = node;
-		int compVal = m_comp(data, node->data);
-		if (compVal < 0) {
-			node = node->left;
-			left = true;
+		int comp_val = m_comp(data, (*node)->data);
+		if (comp_val < 0) {
+			node = &(*node)->left;
 		}
-		else if (compVal > 0) {
-			node = node->right;
-			left = false;
+		else if (comp_val > 0) {
+			node = &(*node)->right;
 		}
 		else {
-			if (node->right == NULL) {
-				node = node->right;
-				left = false;
+			if ((*node)->right == NULL) {
+				node = &(*node)->right;
 			}
 			else {
-				node = node->left;
-				left = true;
+				node = &(*node)->left;
 			}
 		}
-		nodeStack.push_back(std::pair<bool, AVLNode *>(left, parent));
+		path.push_back(node);
 	}
 
-	// Vloženie prvku
-	if (parent == NULL) {
-		m_rootNode = new AVLNode(data);
-	}
-	else {
-		bool rebalanceUp = false;
-		nodeStack.pop_back();
-		node = new AVLNode(data);
-		if (left) {
-			parent->left = node;
-			if (parent->balance <= 0) {
-				rebalanceUp = true;
-			}
-			parent->balance--;
+	AVLNodePtr *child = NULL;
+	for (typename std::list<AVLNodePtr *>::reverse_iterator it = path.rbegin(); it != path.rend(); ++it) {
+		AVLNodePtr *node = *it;
+		if (*node == NULL) {
+			*node = new AVLNode(data);
 		}
 		else {
-			parent->right = node;
-			if (parent->balance >= 0) {
-				rebalanceUp = true;
-			}
-			parent->balance++;
-		}
-		while (rebalanceUp && !nodeStack.empty()) {
-			std::pair<bool, AVLNode *> pathElement = nodeStack.back();
-			nodeStack.pop_back();
-			bool parentNodeLeft = pathElement.first;
-			AVLNode *rootNode = pathElement.second;
-			if (parentNodeLeft) {
-				if (rootNode->balance > 0) {
-					rebalanceUp = false;
-				}
-				rootNode->balance--;
+			signed char oldBalance = (*node)->balance;
+			if ((*node)->right == *child) {
+				(*node)->balance++;
 			}
 			else {
-				if (rootNode->balance < 0) {
-					rebalanceUp = false;
-				}
-				rootNode->balance++;
+				(*node)->balance--;
 			}
-			if (rootNode->balance == 2 || rootNode->balance == -2) {
-				bool left = false;
-				AVLNodePtr parentNode = NULL;
-				if (!nodeStack.empty()) {
-					std::pair<bool, AVLNode *> el2 = nodeStack.back();
-					left = el2.first;
-					parentNode = el2.second;
-				}
-				rebalance(rootNode);
-				if (parentNode != NULL) {
-					if (left) {
-						parentNode->left = rootNode;
-					}
-					else {
-						parentNode->right = rootNode;
-					}
-				}
-				else {
-					m_rootNode = rootNode;
-				}
+			if (abs(oldBalance) >= abs((*node)->balance)) {
+				return;
+			}
+			if ((*node)->balance == 2 || (*node)->balance == -2) {
+				rebalance(*node);
 				return;
 			}
 		}
+		child = node;
 	}
 }
 
