@@ -22,6 +22,10 @@
  * \file Deklarácia AVL stromu.
  */
 
+#ifndef  AVLTREE_H
+#define  AVLTREE_H
+
+
 #define RED     "\e[0;31m"
 #define GREEN   "\e[0;32m"
 #define YELLOW  "\e[0;33m"
@@ -38,9 +42,6 @@
 #define LIGHT_WHITE   "\e[1;37m"
 
 
-#ifndef  AVLTREE_H
-#define  AVLTREE_H
-
 #include <cstdlib>
 #include <iostream>
 #include <list>
@@ -48,8 +49,13 @@
 #include <algorithm>
 #include <fstream>
 
-#include "Comparator.h"
 
+template < typename KeyT,
+	typename DataT,
+	template < typename T, typename U > class ComparatorT >
+class AVLTree;
+
+#include "Comparator.h"
 
 template < typename KeyT,
 	typename DataT,
@@ -57,12 +63,11 @@ template < typename KeyT,
 class AVLTree
 {
 public:
-	enum {
-		LT = -1,
-		EQL = 0,
-		GT = 1
-	} SearchType;
-
+	enum ComparisonType {
+		Lt  = -1,
+		Eql = 0,
+		Gt  = 1
+	};
 	AVLTree();
 	~AVLTree();
 	void insert(const DataT &data);
@@ -90,6 +95,14 @@ private:
 
 	typedef AVLNode * AVLNodePtr;
 
+	enum Balanced {
+		BalancedDoubleLeft  = -2,
+		BalancedLeft        = -1,
+		Balanced            = 0,
+		BalancedRight       = 1,
+		BalancedDoubleRight = 2
+	};
+
 private:
 	bool rebalance(AVLNodePtr &root);
 	bool rotateL(AVLNodePtr &root);
@@ -97,12 +110,12 @@ private:
 	bool rotateRL(AVLNodePtr &root);
 	bool rotateLR(AVLNodePtr &root);
 	bool insertIntoSubTree(AVLNode * &node, const DataT &data);
-	std::pair<bool, DataT *> removeFromSubTree(AVLNode * &node, const DataT &data, bool &changeHeight, int sType);
+	std::pair<bool, DataT *> removeFromSubTree(AVLNode * &node, const DataT &data, bool &changeHeight, ComparisonType sType);
+	std::list<DataT> findSubTree(const KeyT &data, AVLNode *node);
+	void deleteSubTree(AVLNode * &node);
 
 	void printSubTree(AVLNode *node, int depth);
 	void graphvizNodes(std::ostream &os, AVLNode *node, bool resetCounter = false, int parentId = 0, bool left = true);
-	void deleteSubTree(AVLNode *node);
-	std::list<DataT> findSubTree(const KeyT &data, AVLNode *node);
 
 
 private:

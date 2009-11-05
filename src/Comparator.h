@@ -24,10 +24,16 @@
 #ifndef  COMPARATOR_H
 #define  COMPARATOR_H
 
-template <typename DataT, typename KeyT> class Comparator
+template <typename DataT, typename KeyT>
+class Comparator
 {
+	//int operator()(DataT a, KeyT b, typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType type);
+
 public:
-	int operator()(DataT a, KeyT b);
+	typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType operator()(
+		DataT a,
+		KeyT b,
+		typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType type);
 };
 
 // Je potrebná aj implementácia

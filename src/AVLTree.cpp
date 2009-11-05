@@ -52,10 +52,12 @@ template < typename KeyT,
 void AVLTree<KeyT, DataT, ComparatorT >::remove(const DataT &data)
 {
 	bool changeHeight = false;
-	std::pair<bool, DataT *> deleted = removeFromSubTree(m_rootNode, data, changeHeight, EQL);
+	std::pair<bool, DataT *> deleted = removeFromSubTree(m_rootNode, data, changeHeight, Eql);
+	// Uvoľnenie pamäte prvku, ak už nebol uvoľnený
 	if (deleted.first) {
 		delete deleted.second;
 	}
+	deleted.first = false;
 }
 
 
@@ -65,16 +67,16 @@ template < typename KeyT,
 bool AVLTree<KeyT, DataT, ComparatorT >::rebalance(AVLNodePtr &root)
 {
 	bool changeHeight = false;
-	if (root->balance == 2) {
-		if (root->right->balance == -1) {
+	if (root->balance == BalancedDoubleRight) {
+		if (root->right->balance == BalancedLeft) {
 			changeHeight = rotateLR(root);
 		}
 		else {
 			changeHeight = rotateL(root);
 		}
 	}
-	else if (root->balance == -2) {
-		if (root->left->balance == 1) {
+	else if (root->balance == BalancedDoubleLeft) {
+		if (root->left->balance == BalancedRight) {
 			changeHeight = rotateRL(root);
 		}
 		else {
@@ -92,13 +94,16 @@ bool AVLTree<KeyT, DataT, ComparatorT >::rotateL(AVLNodePtr &root)
 {
 	AVLNodePtr pivot = root->right;
 	bool changeHeight = false;
-	if (root->right->balance != 0) {
+	// Ak nebol uzol vyvážený vždy nastane zmena výšky
+	if (root->right->balance != Balanced) {
 		changeHeight = true;
 	}
 
+	// Rotácia prvkov
 	root->right = pivot->left;
 	pivot->left = root;
 
+	// Zmena vyváženia
 	pivot->balance--;
 	root->balance = -(pivot->balance);
 
@@ -114,7 +119,7 @@ bool AVLTree<KeyT, DataT, ComparatorT >::rotateR(AVLNodePtr &root)
 {
 	AVLNodePtr pivot = root->left;
 	bool changeHeight = false;
-	if (root->left->balance != 0) {
+	if (root->left->balance != Balanced) {
 		changeHeight = true;
 	}
 
@@ -137,18 +142,21 @@ bool AVLTree<KeyT, DataT, ComparatorT >::rotateRL(AVLNodePtr &root)
 	AVLNodePtr leftChild = root->left;
 	AVLNodePtr successor = leftChild->right;
 
+	// Rotácie
 	root->left = successor->right;
 	successor->right = root;
 
 	leftChild->right = successor->left;
 	successor->left = leftChild;
 
-	successor->left->balance = -std::max<int>(successor->balance, 0);
-	successor->right->balance = -std::min<int>(successor->balance, 0);
-	successor->balance = 0;
+	// Zmena vyváženia
+	successor->left->balance = -std::max<signed char>(successor->balance, 0);
+	successor->right->balance = -std::min<signed char>(successor->balance, 0);
+	successor->balance = Balanced;
 
 	root = successor;
 
+	// Pri dvojitej rotácii vždy dôjde k zmene výšky
 	return true;
 }
 
@@ -167,9 +175,9 @@ bool AVLTree<KeyT, DataT, ComparatorT >::rotateLR(AVLNodePtr &root)
 	rightChild->left = successor->right;
 	successor->right = rightChild;
 
-	successor->left->balance = -std::max<int>(successor->balance, 0);
-	successor->right->balance = -std::min<int>(successor->balance, 0);
-	successor->balance = 0;
+	successor->left->balance = -std::max<signed char>(successor->balance, 0);
+	successor->right->balance = -std::min<signed char>(successor->balance, 0);
+	successor->balance = Balanced;
 
 	root = successor;
 
@@ -187,14 +195,17 @@ bool AVLTree<KeyT, DataT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const
 		return true;
 	}
 
-	int comp_val = m_comp(data, node->data);
+	ComparisonType comp_val = m_comp(data, node->data, Eql);
 	int direction;
-	if (comp_val < 0) {
+	// Skúsime vložiť vľavo
+	if (comp_val == Lt) {
 		direction = -1;
 	}
-	else if (comp_val > 0) {
+	// Vpravo
+	else if (comp_val == Gt) {
 		direction = 1;
 	}
+	// Prvky sú rovnaké, pokúsime sa vložiť na voľné miesto
 	else {
 		if (node->right == NULL) {
 			direction = 1;
@@ -205,6 +216,8 @@ bool AVLTree<KeyT, DataT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const
 	}
 
 	signed char oldBalance = node->balance;
+
+	// Vloženie do ľavého / pravého podstromu
 	bool balanceUp;
 	if (direction == -1) {
 		balanceUp = insertIntoSubTree(node->left, data);
@@ -212,62 +225,70 @@ bool AVLTree<KeyT, DataT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const
 	else {
 		balanceUp = insertIntoSubTree(node->right, data);
 	}
+
+	// Zmena vyváženia
 	if (balanceUp) {
 		node->balance += direction;
 	}
 
-	if (node->balance == 2 || node->balance == -2) {
+	// Vyváženie stromu v prípade, že je nevyvážený
+	if (node->balance == BalancedDoubleRight || node->balance == BalancedDoubleLeft) {
 		rebalance(node);
 		return false;
 	}
 	else {
+		// Ak sa zväčšilo nevyváženie pošleme to vyššie
 		if (abs(oldBalance) < abs(node->balance)) {
 			return true;
 		}
+		else {
+			return false;
+		}
 	}
-	return false;
 }
 
 
 template < typename KeyT,
 	typename DataT,
 	template < typename T, typename U > class ComparatorT >
-std::pair<bool, DataT *> AVLTree<KeyT, DataT, ComparatorT>::removeFromSubTree(AVLNode * &node, const DataT &data, bool &changeHeight, int sType)
+std::pair<bool, DataT *> AVLTree<KeyT, DataT, ComparatorT>::removeFromSubTree(
+	AVLNode * &node,
+	const DataT &data,
+	bool &changeHeight,
+	ComparisonType sType)
 {
+	// Nenašiel sa prvok
 	if (node == NULL) {
-		changeHeight = 0;
+		changeHeight = false;
 		return std::pair<bool, DataT *>(true, NULL);
 	}
 
 	std::pair<bool, DataT *> found(true, NULL);
 	int balanceChange = 0;
-	int comp = m_comp(data, node->data);
 
-	if (comp < 0 && sType == LT && node->left == NULL) {
-		comp = 0;
-	}
-	if (comp > 0 && sType == GT && node->right == NULL) {
-		comp = 0;
-	}
-	if (comp == 0 && sType == LT && node->left != NULL) {
-		comp = -1;
-	}
-	if (comp == 0 && sType == GT && node->left != NULL) {
-		comp = 1;
+	ComparisonType comp = m_comp(data, node->data, sType);
+
+	// Ak hľadáme nasledovníka v in order a ľavý prvok nie je NULL, potom
+	// hľadáme ďalej vľavo kým nebude NULL.
+	if (comp == Eql && sType == Lt && node->left != NULL) {
+		comp = Lt;
 	}
 
-	if (comp < 0) {
+	// Odstránenie v ľavom / pravom podstrome
+	if (comp == Lt) {
 		found = removeFromSubTree(node->left, data, changeHeight, sType);
 	}
-	else if (comp > 0) {
+	else if (comp == Gt) {
 		found = removeFromSubTree(node->right, data, changeHeight, sType);
 	}
-	if (comp != 0) {
+
+	// Prvok neexistuje
+	if (comp != Eql) {
 		if (found.second == NULL) {
 			return found;
 		}
 		if (changeHeight) {
-			if (comp > 0) {
+			if (comp == Gt) {
 				balanceChange = 1;
 			}
 			else {
@@ -275,25 +296,34 @@ std::pair<bool, DataT *> AVLTree<KeyT, DataT, ComparatorT>::removeFromSubTree(AV
 			}
 		}
 	}
+	// Odstránenie prvku
 	else {
+		// Prvok je listom
 		if (node->left == NULL && node->right == NULL) {
 			found = std::pair<bool, DataT *>(true, new DataT(node->data));
+			changeHeight = true;
+
 			delete node;
 			node = NULL;
-			changeHeight = true;
+
 			return found;
 		}
+		// Prvok má oboch synov - vymazávaný prvok sa nahradí nasledovníkom v
+		// in-order poradí.
 		else if (node->left != NULL && node->right != NULL) {
 			found = std::pair<bool, DataT *>(false, &node->data);
 			bool subHeightChanged = false;
-			std::pair<bool, DataT *> subDeleted = removeFromSubTree(node->right, data, subHeightChanged, LT);
+
+			std::pair<bool, DataT *> subDeleted = removeFromSubTree(node->right, data, subHeightChanged, Lt);
 			DataT *newData = subDeleted.second;
 			node->data = *newData;
 			delete newData;
+
 			if (subHeightChanged) {
 				balanceChange = 1;
 			}
 		}
+		// Prvok má jediného syna - vymazávaný p rvok bude nahradený synom
 		else {
 			found = std::pair<bool, DataT *>(true, new DataT(node->data));
 			AVLNode *delNode = node;
@@ -303,6 +333,7 @@ std::pair<bool, DataT *> AVLTree<KeyT, DataT, ComparatorT>::removeFromSubTree(AV
 			else {
 				node = node->left;
 			}
+
 			delete delNode;
 			changeHeight = true;
 			return found;
@@ -311,16 +342,17 @@ std::pair<bool, DataT *> AVLTree<KeyT, DataT, ComparatorT>::removeFromSubTree(AV
 
 	node->balance -= balanceChange;
 
+	// Indikujeme zmenu výšky podstromu
 	if (balanceChange != 0) {
-		if (node->balance != 0) {
+		if (node->balance != Balanced) {
 			changeHeight = rebalance(node);
 		}
 		else {
-			changeHeight = 1;
+			changeHeight = true;
 		}
 	}
 	else {
-		changeHeight = 0;
+		changeHeight = false;
 	}
 
 	return found;
@@ -346,26 +378,32 @@ template < typename KeyT,
 std::list<DataT> AVLTree<KeyT, DataT, ComparatorT >::findSubTree(const KeyT &key, AVLNode *node)
 {
 	std::list<DataT> foundItems;
-	int compVal = m_comp(key, node->data);
+	ComparisonType compVal = m_comp(key, node->data, Eql);
 
-	if (compVal < 0) {
+	// Prvok je menší - hľadáme v ľavom podstrome
+	if (compVal == Lt) {
 		if (node->left != NULL) {
 			std::list<DataT> sub = findSubTree(key, node->left);
 			foundItems.splice(foundItems.end(), sub);
 		}
 	}
-	else if (compVal > 0) {
+	// Prvok je väčší - hľadáme v pravom podstrome
+	else if (compVal == Gt) {
 		if (node->right != NULL) {
 			std::list<DataT> sub = findSubTree(key, node->right);
 			foundItems.splice(foundItems.end(), sub);
 		}
 	}
+	// Prvok nájdený
 	else {
+		// Hľadáme ďalej v ľavom podstrome kvôli duplicitám
 		if (node->left != NULL) {
 			std::list<DataT> sub = findSubTree(key, node->left);
 			foundItems.splice(foundItems.end(), sub);
 		}
+		// Vložíme prvok do zoznamu nájdených prvkov
 		foundItems.push_back(node->data);
+		// Pokračujeme v pravom podstrome
 		if (node->right != NULL) {
 			std::list<DataT> sub = findSubTree(key, node->right);
 			foundItems.splice(foundItems.end(), sub);
@@ -373,6 +411,23 @@ std::list<DataT> AVLTree<KeyT, DataT, ComparatorT >::findSubTree(const KeyT &key
 	}
 	return foundItems;
 }
+
+
+template < typename KeyT,
+	typename DataT,
+	template < typename T, typename U > class ComparatorT >
+void AVLTree<KeyT, DataT, ComparatorT >::deleteSubTree(AVLNode * &node)
+{
+	if (node == NULL) {
+		return;
+	}
+	deleteSubTree(node->left);
+	deleteSubTree(node->right);
+	delete node;
+}
+
+
+/* -------------------- Výpisy (kód na odstrel) -------------------- */
 
 
 template < typename KeyT,
@@ -485,19 +540,5 @@ void AVLTree<KeyT, DataT, ComparatorT >::printSubTree(AVLNode *node, int depth)
 	printSubTree(node->left, depth + 1);
 	std::cout << node->data << std::endl;
 	printSubTree(node->right, depth + 1);
-}
-
-
-template < typename KeyT,
-	typename DataT,
-	template < typename T, typename U > class ComparatorT >
-void AVLTree<KeyT, DataT, ComparatorT >::deleteSubTree(AVLNode *node)
-{
-	if (node == NULL) {
-		return;
-	}
-	deleteSubTree(node->left);
-	deleteSubTree(node->right);
-	delete node;
 }
 

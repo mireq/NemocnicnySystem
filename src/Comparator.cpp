@@ -18,15 +18,27 @@
  * \file Implementácia štandardného komparátora.
  */
 
-template <typename DataT, typename KeyT> inline int Comparator<DataT, KeyT>::operator()(DataT a, KeyT b) {
-	if (a < b) {
-		return -1;
+template <typename DataT, typename KeyT>
+inline typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType
+	Comparator<DataT, KeyT>::operator()(
+		DataT a,
+		KeyT b,
+		typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType type) 
+{
+	if (a == b) {
+		return AVLTree<KeyT, DataT, ::Comparator>::Eql;
 	}
-	else if (a == b) {
-		return 0;
+	if (a < b && type == AVLTree<KeyT, DataT, ::Comparator>::Lt) {
+		return AVLTree<KeyT, DataT, ::Comparator>::Eql;
+	}
+	if (a > b && type == AVLTree<KeyT, DataT, ::Comparator>::Gt) {
+		return AVLTree<KeyT, DataT, ::Comparator>::Eql;
+	}
+	if (a < b) {
+		return AVLTree<KeyT, DataT, ::Comparator>::Lt;
 	}
 	else {
-		return 1;
+		return AVLTree<KeyT, DataT, ::Comparator>::Gt;
 	}
 }
 
