@@ -39,12 +39,18 @@ template < typename DataT,
 class AVLTree
 {
 public:
+	// -------------------------------- Iterator --------------------------------
+	class Iterator;
+
 	AVLTree();
 	~AVLTree();
 	void insert(const DataT &data);
 	bool remove(const DataT &data);
 	std::list<DataT> find(const KeyT &data);
+	int count() {return m_count;};
+	Iterator iterator();
 	void print();
+
 private:
 	// -------------------------------- AVLNode --------------------------------
 	struct AVLNode
@@ -90,15 +96,20 @@ private:
 private:
 	AVLNode *m_rootNode;
 	ComparatorT<DataT, KeyT> m_comp;
+	int m_count;
 };
 
-/* ----- Definícia AVL stromu ----- */
+#include "Iterator.h"
+
+/* ----- Implementácia ----- */
+
 template < typename DataT,
  typename KeyT,
 	template < typename T, typename U > class ComparatorT >
 AVLTree<DataT, KeyT, ComparatorT >::AVLTree()
+	: m_rootNode(NULL),
+	m_count(0)
 {
-	m_rootNode = NULL;
 }
 
 
@@ -273,6 +284,7 @@ bool AVLTree<DataT, KeyT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const
 {
 	if (node == NULL) {
 		node = new AVLNode(data);
+		m_count++;
 		return true;
 	}
 
@@ -375,6 +387,7 @@ std::pair<bool, DataT *> AVLTree<DataT, KeyT, ComparatorT>::removeFromSubTree(
 	}
 	// Odstránenie prvku
 	else {
+		m_count--;
 		// Prvok je listom
 		if (node->left == NULL && node->right == NULL) {
 			found = std::pair<bool, DataT *>(true, new DataT(node->data));
@@ -448,6 +461,14 @@ std::list<DataT> AVLTree<DataT, KeyT, ComparatorT >::find(const KeyT &key)
 	return foundItems;
 }
 
+
+template < typename DataT,
+ typename KeyT,
+	template < typename T, typename U > class ComparatorT >
+typename AVLTree<DataT, KeyT, ComparatorT>::Iterator AVLTree<DataT, KeyT, ComparatorT>::iterator()
+{
+	return Iterator(this);
+}
 
 template < typename DataT,
  typename KeyT,
@@ -526,5 +547,6 @@ void AVLTree<DataT, KeyT, ComparatorT >::printSubTree(AVLNode *node)
 	std::cout << *(node->data) << std::endl;
 	printSubTree(node->right);
 }
+
 #endif   /* ----- #ifndef AVLTREE_H  ----- */
 

@@ -28,7 +28,7 @@ Meno::Meno(std::string meno, std::string priezvisko)
 
 std::ostream &operator << (std::ostream &os, Meno &meno)
 {
-	os << meno.m_meno << " " << meno.m_priezvisko;
+	os << meno.m_priezvisko << " " << meno.m_meno;
 	return os;
 }
 
