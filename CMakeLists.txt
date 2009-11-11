@@ -16,6 +16,7 @@ else(CMAKE_BUILD_TYPE MATCHES Debug)
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 find_package(Qt4 REQUIRED)
+include(${QT_USE_FILE})
 
 include_directories(
 	"${PROJECT_BINARY_DIR}"
@@ -31,16 +32,42 @@ set(nemsys_SRCS
 	src/Comparator.cpp
 	src/Meno.cpp
 	src/Pacient.cpp
+	src/PacientEdit.cpp
 	src/RodCis.cpp
 )
 
-#qt4_wrap_cpp(nemsys_MOC_SRCS ${nemsys_MOC_HDRS})
-#qt4_wrap_ui(nemsys_UIS_SRCS ${nemsys_UIS})
-#qt4_add_resources(nemsys_QRC_SRCS ${nemsys_QRC})
+set(nemsys_MOC_HDRS
+	src/PacientEdit.h
+)
+
+set(nemsys_HDRS
+	src/AVLTree.h
+	src/Comparator.h
+	src/Iterator.h
+	src/Meno.h
+	src/Pacient.h
+	src/RodCis.h
+)
+
+set(nemsys_UIS
+	ui/PacientEdit.ui
+)
+
+set(nemsys_QRC
+	ui/data.qrc
+)
+
+qt4_wrap_cpp(nemsys_MOC_SRCS ${nemsys_MOC_HDRS})
+qt4_wrap_ui(nemsys_UIS_SRCS ${nemsys_UIS})
+qt4_add_resources(nemsys_QRC_SRCS ${nemsys_QRC})
 #qt4_add_translation(lrelease_outputs ${nemsys_TRANS})
 
 add_executable(nemsys
 	${nemsys_SRCS}
+	${nemsys_HDRS}
+	${nemsys_UIS_SRCS}
+	${nemsys_MOC_SRCS}
+	${nemsys_QRC_SRCS}
 )
 
 target_link_libraries(nemsys ${QT_LIBRARIES})

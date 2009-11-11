@@ -77,10 +77,10 @@ ComparatorBase::ComparisonType
 		return Eql;
 	}
 	// Chceme presné zaradenie - kontrolujeme rodné číslo
-	if (a->rodCis() < b->rodCis()) {
+	if (a->rodCislo() < b->rodCislo()) {
 		return Lt;
 	}
-	if (a->rodCis() > b->rodCis()) {
+	if (a->rodCislo() > b->rodCislo()) {
 		return Gt;
 	}
 	return Eql;

@@ -26,7 +26,7 @@
 
 using namespace std;
 
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 {
 	Q_UNUSED(argc);
 	Q_UNUSED(argv);

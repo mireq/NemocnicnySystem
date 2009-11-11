@@ -20,15 +20,23 @@
 
 #include "Meno.h"
 
-Meno::Meno(std::string meno, std::string priezvisko)
+Meno::Meno()
+	: m_meno(QString()),
+	m_priezvisko(QString())
 {
-	m_meno = meno;
-	m_priezvisko = priezvisko;
 }
+
+
+Meno::Meno(QString meno, QString priezvisko)
+	: m_meno(meno),
+	m_priezvisko(priezvisko)
+{
+}
+
 
 std::ostream &operator << (std::ostream &os, Meno &meno)
 {
-	os << meno.m_priezvisko << " " << meno.m_meno;
+	os << "Meno   " << meno.m_meno.toUtf8().data() << std::endl << "Priezv " << meno.m_priezvisko.toUtf8().data() << std::endl;
 	return os;
 }
 

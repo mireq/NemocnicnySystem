@@ -20,22 +20,30 @@
 
 #include "RodCis.h"
 
-RodCis::RodCis(const char *rodCis)
+RodCis::RodCis()
 {
-	for (int i = 0; i < RodCisDlzka; ++i) {
-		m_rodCis[i] = rodCis[i];
+	for (int i = 0; i < RodCisloDlzka; ++i) {
+		m_rodCislo[i] = '0';
 	}
 }
 
 
-std::ostream &operator << (std::ostream &os, RodCis &rodCis)
+RodCis::RodCis(const char *rodCislo)
 {
-	char rc[RodCis::RodCisDlzka + 1];
-	for (int i = 0; i < RodCis::RodCisDlzka; ++i) {
-		rc[i] = rodCis.m_rodCis[i];
+	for (int i = 0; i < RodCisloDlzka; ++i) {
+		m_rodCislo[i] = rodCislo[i];
 	}
-	rc[RodCis::RodCisDlzka] = '\0';
-	os << rc;
+}
+
+
+std::ostream &operator << (std::ostream &os, RodCis &rodCislo)
+{
+	char rc[RodCis::RodCisloDlzka + 1];
+	for (int i = 0; i < RodCis::RodCisloDlzka; ++i) {
+		rc[i] = rodCislo.m_rodCislo[i];
+	}
+	rc[RodCis::RodCisloDlzka] = '\0';
+	os << "Rodne cislo: " << rc << std::endl;
 	return os;
 }
 

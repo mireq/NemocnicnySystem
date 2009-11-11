@@ -30,15 +30,18 @@
 class RodCis
 {
 public:
-	RodCis(const char *rodCis);
+	enum {RodCisloDlzka = 10};
+
+	RodCis();
+	RodCis(const char *rodCislo);
 
 	bool inline operator <(const RodCis &other) const
 	{
-		for (int i = 0; i < RodCisDlzka; ++i) {
-			if (m_rodCis[i] < other.m_rodCis[i]) {
+		for (int i = 0; i < RodCisloDlzka; ++i) {
+			if (m_rodCislo[i] < other.m_rodCislo[i]) {
 				return true;
 			}
-			else if (m_rodCis[i] > other.m_rodCis[i]) {
+			else if (m_rodCislo[i] > other.m_rodCislo[i]) {
 				return false;
 			}
 		}
@@ -47,11 +50,11 @@ public:
 
 	bool inline operator >(const RodCis &other) const
 	{
-		for (int i = 0; i < RodCisDlzka; ++i) {
-			if (m_rodCis[i] > other.m_rodCis[i]) {
+		for (int i = 0; i < RodCisloDlzka; ++i) {
+			if (m_rodCislo[i] > other.m_rodCislo[i]) {
 				return true;
 			}
-			else if (m_rodCis[i] < other.m_rodCis[i]) {
+			else if (m_rodCislo[i] < other.m_rodCislo[i]) {
 				return false;
 			}
 		}
@@ -60,8 +63,8 @@ public:
 
 	bool inline operator ==(const RodCis &other) const
 	{
-		for (int i = 0; i < RodCisDlzka; ++i) {
-			if (m_rodCis[i] != other.m_rodCis[i]) {
+		for (int i = 0; i < RodCisloDlzka; ++i) {
+			if (m_rodCislo[i] != other.m_rodCislo[i]) {
 				return false;
 			}
 		}
@@ -69,9 +72,8 @@ public:
 	}
 
 private:
-	enum {RodCisDlzka = 10};
-	char m_rodCis[RodCisDlzka];
-	friend std::ostream &operator << (std::ostream &os, RodCis &rodCis);
+	char m_rodCislo[RodCisloDlzka];
+	friend std::ostream &operator << (std::ostream &os, RodCis &rodCislo);
 };
 
 #endif   /* ----- #ifndef RODCIS_H  ----- */

@@ -28,18 +28,44 @@
 #include "Meno.h"
 #include "RodCis.h"
 
+#include <QDate>
+#include <QString>
+#include <QStringList>
+
 #include <ostream>
 
 class Pacient
 {
 public:
-	Pacient(const RodCis &rodCis, const Meno &meno);
+	Pacient();
+	Pacient(const RodCis &rodCislo, const Meno &meno);
 	const Meno &meno() const;
-	const RodCis &rodCis() const;
+	void setMeno(const Meno &meno);
+	const RodCis &rodCislo() const;
+	void setRodCislo(const RodCis &rodCislo);
+	void setRodCislo(QString rodCislo);
+	const QDate &datumNarodenia() const;
+	void setDatumNarodenia(const QDate &datum);
+	int poistovna() const;
+	void setPoistovna(int poistovna);
+	const QString &adresa() const;
+	void setAdresa(const QString &adresa);
+	const QStringList &alergie() const;
+	void setAlergie(const QStringList &alergie);
+	void pridajAlergiu(const QString &alergia);
+	void odoberAlergiu(int index);
+
+	bool isValid() const;
 
 private:
-	RodCis m_rodCis;
+	RodCis m_rodCislo;
 	Meno m_meno;
+	QDate m_datumNarodenia;
+	int m_poistovna;
+	QString m_adresa;
+	QStringList m_alergie;
+
+	bool m_valid;
 
 	friend std::ostream &operator << (std::ostream &os, Pacient &pacient);
 };

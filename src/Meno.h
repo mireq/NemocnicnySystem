@@ -25,13 +25,14 @@
 #ifndef  MENO_H
 #define  MENO_H
 
-#include <string>
+#include <QString>
 #include <ostream>
 
 class Meno
 {
 public:
-	Meno(std::string meno, std::string priezvisko);
+	Meno();
+	Meno(QString meno, QString priezvisko);
 
 	bool inline operator <(const Meno &other) const
 	{
@@ -80,8 +81,8 @@ public:
 	}
 
 private:
-	std::string m_meno;
-	std::string m_priezvisko;
+	QString m_meno;
+	QString m_priezvisko;
 
 	friend std::ostream &operator << (std::ostream &os, Meno &meno);
 };
