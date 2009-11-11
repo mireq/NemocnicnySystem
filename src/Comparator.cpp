@@ -18,27 +18,71 @@
  * \file Implementácia štandardného komparátora.
  */
 
-template <typename DataT, typename KeyT>
-inline typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType
-	Comparator<DataT, KeyT>::operator()(
-		DataT a,
-		KeyT b,
-		typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType type) 
+#include "Comparator.h"
+#include "Pacient.h"
+
+template <>
+ComparatorBase::ComparisonType
+	PacientMenoComparator<Pacient *, Meno>::operator()(
+		Pacient *a,
+		Meno b,
+		ComparatorBase::ComparisonType type)
 {
-	if (a == b) {
-		return AVLTree<KeyT, DataT, ::Comparator>::Eql;
+	if (a->meno() < b) {
+		if (type == Lt) {
+			return Eql;
+		}
+		else {
+			return Lt;
+		}
 	}
-	if (a < b && type == AVLTree<KeyT, DataT, ::Comparator>::Lt) {
-		return AVLTree<KeyT, DataT, ::Comparator>::Eql;
+	if (a->meno() > b) {
+		if (type == Gt) {
+			return Eql;
+		}
+		else {
+			return Gt;
+		}
 	}
-	if (a > b && type == AVLTree<KeyT, DataT, ::Comparator>::Gt) {
-		return AVLTree<KeyT, DataT, ::Comparator>::Eql;
+	return Eql;
+}
+
+
+template <>
+ComparatorBase::ComparisonType
+	PacientMenoComparator<Pacient *, Meno>::operator()(
+		Pacient *a,
+		Pacient *b,
+		ComparatorBase::ComparisonType type)
+{
+	if (a->meno() < b->meno()) {
+		if (type == Lt) {
+			return Eql;
+		}
+		else {
+			return Lt;
+		}
 	}
-	if (a < b) {
-		return AVLTree<KeyT, DataT, ::Comparator>::Lt;
+	if (a->meno() > b->meno()) {
+		if (type == Gt) {
+			return Eql;
+		}
+		else {
+			return Gt;
+		}
 	}
-	else {
-		return AVLTree<KeyT, DataT, ::Comparator>::Gt;
+
+	// Sú rovnaké
+	if (type != ExactEql) {
+		return Eql;
 	}
+	// Chceme presné zaradenie - kontrolujeme rodné číslo
+	if (a->rodCis() < b->rodCis()) {
+		return Lt;
+	}
+	if (a->rodCis() > b->rodCis()) {
+		return Gt;
+	}
+	return Eql;
 }
 

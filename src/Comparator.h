@@ -24,20 +24,71 @@
 #ifndef  COMPARATOR_H
 #define  COMPARATOR_H
 
-template <typename DataT, typename KeyT>
-class Comparator
-{
-	//int operator()(DataT a, KeyT b, typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType type);
 
+class ComparatorBase
+{
 public:
-	typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType operator()(
-		DataT a,
-		KeyT b,
-		typename AVLTree<KeyT, DataT, ::Comparator>::ComparisonType type);
+	enum ComparisonType {
+		Lt       = -1,
+		Eql      = 0,
+		Gt       = 1,
+		ExactEql = 2
+	};
 };
 
-// Je potrebná aj implementácia
-#include "Comparator.cpp"
+template <typename DataT, typename KeyT>
+class Comparator: public ComparatorBase
+{
+	//int operator()(DataT a, KeyT b, typename AVLTree<DataT, KeyT, ::Comparator>::ComparisonType type);
+public:
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		KeyT b,
+		ComparatorBase::ComparisonType type);
+};
 
-#endif   /* ----- #ifndef STDCOMPARATOR_H  ----- */
+
+template <typename DataT, typename KeyT>
+ComparatorBase::ComparisonType
+	Comparator<DataT, KeyT>::operator()(
+		DataT a,
+		KeyT b,
+		ComparatorBase::ComparisonType type)
+{
+	if (a == b) {
+		return Eql;
+	}
+	if (a < b && type == Lt) {
+		return Eql;
+	}
+	if (a > b && type == Gt) {
+		return Eql;
+	}
+	if (a < b) {
+		return Lt;
+	}
+	else {
+		return Gt;
+	}
+}
+
+
+template <typename DataT, typename KeyT>
+class PacientMenoComparator: public Comparator<DataT, KeyT>
+{
+public:
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		KeyT b,
+		ComparatorBase::ComparisonType type);
+
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		DataT b,
+		ComparatorBase::ComparisonType type);
+};
+
+
+
+#endif   /* ----- #ifndef COMPARATOR_H  ----- */
 

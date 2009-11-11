@@ -1,12 +1,10 @@
 /*
  * =====================================================================================
  *
- *       Filename:  main.cpp
- *
- *    Description:  Nemocničný informačný systém
+ *       Filename:  Meno.cpp
  *
  *        Version:  1.0
- *        Created:  24.10.2009 13:43:28
+ *        Created:  05.11.2009 09:57:07
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,20 +14,21 @@
  * =====================================================================================
  */
 
-#include "src/AVLTree.h"
+/**
+ * \file Definícia mena pacienta.
+ */
 
-#include <QApplication>
+#include "Meno.h"
 
-#include <cstdlib>
-#include <iostream>
-#include <ctime>
-
-using namespace std;
-
-int main(int argc, const char *argv[])
+Meno::Meno(std::string meno, std::string priezvisko)
 {
-	Q_UNUSED(argc);
-	Q_UNUSED(argv);
-	return 0;
+	m_meno = meno;
+	m_priezvisko = priezvisko;
+}
+
+std::ostream &operator << (std::ostream &os, Meno &meno)
+{
+	os << meno.m_meno << " " << meno.m_priezvisko;
+	return os;
 }
 

@@ -28,6 +28,10 @@ include_directories(
 
 set(nemsys_SRCS
 	main.cpp
+	src/Comparator.cpp
+	src/Meno.cpp
+	src/Pacient.cpp
+	src/RodCis.cpp
 )
 
 #qt4_wrap_cpp(nemsys_MOC_SRCS ${nemsys_MOC_HDRS})
