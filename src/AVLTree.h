@@ -42,14 +42,13 @@ public:
 	// -------------------------------- Iterator --------------------------------
 	class Iterator;
 
-	AVLTree();
-	~AVLTree();
-	void insert(const DataT &data);
+	AVLTree(): m_rootNode(NULL), m_count(0) {};
+	~AVLTree()                      { deleteSubTree(m_rootNode);           };
+	void insert(const DataT &data)  { insertIntoSubTree(m_rootNode, data); };
+	Iterator find(const KeyT &key)  { return Iterator(this, key);          };
+	Iterator iterator()             { return Iterator(this);               };
 	bool remove(const DataT &data);
-	std::list<DataT> find(const KeyT &data);
 	int count() {return m_count;};
-	Iterator iterator();
-	void print();
 
 private:
 	// -------------------------------- AVLNode --------------------------------
@@ -87,11 +86,7 @@ private:
 	bool rotateLR(AVLNodePtr &root);
 	bool insertIntoSubTree(AVLNode * &node, const DataT &data);
 	std::pair<bool, DataT *> removeFromSubTree(AVLNode * &node, const DataT &data, bool &changeHeight, ComparatorBase::ComparisonType sType);
-	std::list<DataT> findSubTree(const KeyT &data, AVLNode *node);
 	void deleteSubTree(AVLNode * &node);
-
-	void printSubTree(AVLNode *node);
-
 
 private:
 	AVLNode *m_rootNode;
@@ -102,33 +97,6 @@ private:
 #include "Iterator.h"
 
 /* ----- Implementácia ----- */
-
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-AVLTree<DataT, KeyT, ComparatorT >::AVLTree()
-	: m_rootNode(NULL),
-	m_count(0)
-{
-}
-
-
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-AVLTree<DataT, KeyT, ComparatorT >::~AVLTree()
-{
-	deleteSubTree(m_rootNode);
-}
-
-
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-void AVLTree<DataT, KeyT, ComparatorT >::insert(const DataT &data)
-{
-	insertIntoSubTree(m_rootNode, data);
-}
 
 
 template < typename DataT,
@@ -449,67 +417,6 @@ std::pair<bool, DataT *> AVLTree<DataT, KeyT, ComparatorT>::removeFromSubTree(
 }
 
 
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-std::list<DataT> AVLTree<DataT, KeyT, ComparatorT >::find(const KeyT &key)
-{
-	std::list<DataT> foundItems;
-	if (m_rootNode != NULL) {
-		foundItems = findSubTree(key, m_rootNode);
-	}
-	return foundItems;
-}
-
-
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-typename AVLTree<DataT, KeyT, ComparatorT>::Iterator AVLTree<DataT, KeyT, ComparatorT>::iterator()
-{
-	return Iterator(this);
-}
-
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-std::list<DataT> AVLTree<DataT, KeyT, ComparatorT >::findSubTree(const KeyT &key, AVLNode *node)
-{
-	std::list<DataT> foundItems;
-	ComparatorBase::ComparisonType compVal = m_comp(key, node->data, ComparatorBase::Eql);
-
-	// Prvok je menší - hľadáme v ľavom podstrome
-	if (compVal == ComparatorBase::Lt) {
-		if (node->left != NULL) {
-			std::list<DataT> sub = findSubTree(key, node->left);
-			foundItems.splice(foundItems.end(), sub);
-		}
-	}
-	// Prvok je väčší - hľadáme v pravom podstrome
-	else if (compVal == ComparatorBase::Gt) {
-		if (node->right != NULL) {
-			std::list<DataT> sub = findSubTree(key, node->right);
-			foundItems.splice(foundItems.end(), sub);
-		}
-	}
-	// Prvok nájdený
-	else {
-		// Hľadáme ďalej v ľavom podstrome kvôli duplicitám
-		if (node->left != NULL) {
-			std::list<DataT> sub = findSubTree(key, node->left);
-			foundItems.splice(foundItems.end(), sub);
-		}
-		// Vložíme prvok do zoznamu nájdených prvkov
-		foundItems.push_back(node->data);
-		// Pokračujeme v pravom podstrome
-		if (node->right != NULL) {
-			std::list<DataT> sub = findSubTree(key, node->right);
-			foundItems.splice(foundItems.end(), sub);
-		}
-	}
-	return foundItems;
-}
-
 
 template < typename DataT,
  typename KeyT,
@@ -522,30 +429,6 @@ void AVLTree<DataT, KeyT, ComparatorT >::deleteSubTree(AVLNode * &node)
 	deleteSubTree(node->left);
 	deleteSubTree(node->right);
 	delete node;
-}
-
-
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-void AVLTree<DataT, KeyT, ComparatorT >::print()
-{
-	printSubTree(m_rootNode);
-}
-
-
-template < typename DataT,
- typename KeyT,
-	template < typename T, typename U > class ComparatorT >
-void AVLTree<DataT, KeyT, ComparatorT >::printSubTree(AVLNode *node)
-{
-	if (node == NULL) {
-		return;
-	}
-
-	printSubTree(node->left);
-	std::cout << *(node->data) << std::endl;
-	printSubTree(node->right);
 }
 
 #endif   /* ----- #ifndef AVLTREE_H  ----- */
