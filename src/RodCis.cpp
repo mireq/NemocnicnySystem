@@ -25,6 +25,7 @@ RodCis::RodCis()
 	for (int i = 0; i < RodCisloDlzka; ++i) {
 		m_rodCislo[i] = '0';
 	}
+	m_rodCislo[RodCisloDlzka] = '\0';
 }
 
 
@@ -33,17 +34,13 @@ RodCis::RodCis(const char *rodCislo)
 	for (int i = 0; i < RodCisloDlzka; ++i) {
 		m_rodCislo[i] = rodCislo[i];
 	}
+	m_rodCislo[RodCisloDlzka] = '\0';
 }
 
 
 std::ostream &operator << (std::ostream &os, RodCis &rodCislo)
 {
-	char rc[RodCis::RodCisloDlzka + 1];
-	for (int i = 0; i < RodCis::RodCisloDlzka; ++i) {
-		rc[i] = rodCislo.m_rodCislo[i];
-	}
-	rc[RodCis::RodCisloDlzka] = '\0';
-	os << "Rodne cislo: " << rc << std::endl;
+	os << "Rodne cislo: " << rodCislo.m_rodCislo << std::endl;
 	return os;
 }
 

@@ -27,6 +27,7 @@
 
 #include "Meno.h"
 #include "RodCis.h"
+#include "serialization.h"
 
 #include <QDate>
 #include <QString>
@@ -56,6 +57,17 @@ public:
 	void odoberAlergiu(int index);
 
 	bool isValid() const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int &)
+	{
+		ar & boost::serialization::make_nvp("rc", m_rodCislo);
+		ar & boost::serialization::make_nvp("meno", m_meno);
+		ar & boost::serialization::make_nvp("dat_nar", m_datumNarodenia);
+		ar & boost::serialization::make_nvp("poistovna", m_poistovna);
+		ar & boost::serialization::make_nvp("adresa", m_adresa);
+		ar & boost::serialization::make_nvp("alergie", m_alergie);
+	}
 
 private:
 	RodCis m_rodCislo;

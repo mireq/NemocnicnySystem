@@ -282,6 +282,10 @@ void AVLTree<DataT, KeyT, ComparatorT >::Iterator::moveNext()
 	 */
 	if (m_node == NULL) {
 		toFirst();
+		// Žiaden prvok nie je v strome
+		if (m_node == NULL) {
+			return;
+		}
 	}
 
 	if (m_node->right != NULL) {
@@ -315,6 +319,10 @@ void AVLTree<DataT, KeyT, ComparatorT >::Iterator::movePrevious()
 {
 	if (m_node == NULL) {
 		toLast();
+		// Žiaden prvok nie je v strome
+		if (m_node == NULL) {
+			return;
+		}
 	}
 	if (m_node->left != NULL) {
 		m_stack.push_back(m_node);

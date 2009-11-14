@@ -32,6 +32,7 @@
 #include <algorithm>
 
 #include "Comparator.h"
+#include "serialization.h"
 
 template < typename DataT,
 	typename KeyT,
@@ -49,6 +50,12 @@ public:
 	Iterator iterator()             { return Iterator(this);               };
 	bool remove(const DataT &data);
 	int count() {return m_count;};
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int &)
+	{
+		ar & boost::serialization::make_nvp("root", m_rootNode);
+		ar & boost::serialization::make_nvp("count", m_count);
+	}
 
 private:
 	// -------------------------------- AVLNode --------------------------------
@@ -65,6 +72,18 @@ private:
 			this->left = NULL;
 			this->right = NULL;
 			this->balance = 0;
+		}
+
+		AVLNode()
+		{
+		}
+
+		template <class Archive>
+		void serialize(Archive &ar, const unsigned int &)
+		{
+			ar & boost::serialization::make_nvp("data", data);
+			ar & boost::serialization::make_nvp("left", left);
+			ar & boost::serialization::make_nvp("right", right);
 		}
 	};
 

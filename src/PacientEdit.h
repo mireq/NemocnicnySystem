@@ -21,7 +21,6 @@
 
 class Pacient;
 class QStringListModel;
-class QStringList;
 
 class PacientEdit: public QWidget, private Ui::PacientEdit
 {
@@ -39,7 +38,6 @@ private slots:
 	void odoberAlergiu();
 
 private:
-	QStringList *m_zoznamAlergii;
 	QStringListModel *m_alergieModel;
 	Pacient *m_pacient;
 };

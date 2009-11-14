@@ -26,6 +26,7 @@
 #define  RODCIS_H
 
 #include <ostream>
+#include "serialization.h"
 
 class RodCis
 {
@@ -71,8 +72,15 @@ public:
 		return true;
 	}
 
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int &)
+	{
+		boost::serialization::binary_object rc(m_rodCislo, RodCisloDlzka);
+		ar & boost::serialization::make_nvp("rc", rc);
+	}
+
 private:
-	char m_rodCislo[RodCisloDlzka];
+	char m_rodCislo[RodCisloDlzka + 1];
 	friend std::ostream &operator << (std::ostream &os, RodCis &rodCislo);
 };
 

@@ -82,6 +82,7 @@ void Pacient::setRodCislo(QString rodCislo)
 			char zn = znak.toLatin1();
 			if (zn < '0' || zn > '9') {
 				m_valid = false;
+				return;
 			}
 			rc[idx] = zn;
 			idx++;
@@ -155,6 +156,14 @@ void Pacient::odoberAlergiu(int index)
 std::ostream &operator << (std::ostream &os, Pacient &pacient)
 {
 	os << pacient.m_rodCislo << pacient.m_meno;
+	os << "Datum narodenia: " << pacient.m_datumNarodenia.toString(Qt::SystemLocaleShortDate).toUtf8().constData() << std::endl;
+	os << "Poistovna: " << pacient.m_poistovna << std::endl;
+	os << "Adresa:" << std::endl;
+	os << pacient.m_adresa.toUtf8().constData() << std::endl;
+	os << "Alergie:" << std::endl;
+	foreach (const QString &alergia, pacient.m_alergie) {
+		os << alergia.toUtf8().constData() << std::endl;
+	}
 	return os;
 }
 

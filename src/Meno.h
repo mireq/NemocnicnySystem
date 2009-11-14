@@ -28,6 +28,8 @@
 #include <QString>
 #include <ostream>
 
+#include "serialization.h"
+
 class Meno
 {
 public:
@@ -80,13 +82,22 @@ public:
 		}
 	}
 
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int &)
+	{
+		ar & boost::serialization::make_nvp("k_meno", m_meno);
+		ar & boost::serialization::make_nvp("priezvisko", m_priezvisko);
+	}
+
 private:
 	QString m_meno;
 	QString m_priezvisko;
+	int a;
 
 	friend std::ostream &operator << (std::ostream &os, Meno &meno);
 };
 
+// Serializácia do streamu
 std::ostream &operator << (std::ostream &os, Meno &meno);
 
 #endif   /* ----- #ifndef MENO_H  ----- */

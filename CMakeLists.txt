@@ -18,6 +18,9 @@ endif(CMAKE_BUILD_TYPE MATCHES Debug)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 
+find_package(Boost COMPONENTS serialization REQUIRED)
+
+
 include_directories(
 	"${PROJECT_BINARY_DIR}"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
@@ -25,12 +28,14 @@ include_directories(
 	"${CMAKE_CURRENT_SOURCE_DIR}/src"
 	"${CMAKE_CURRENT_BINARY_DIR}/src"
 	${QT_INCLUDES}
+	${Boost_INCLUDE_DIRS}
 )
 
 set(nemsys_SRCS
 	main.cpp
 	src/Comparator.cpp
 	src/Meno.cpp
+	src/Nemocnica.cpp
 	src/Pacient.cpp
 	src/PacientEdit.cpp
 	src/RodCis.cpp
@@ -41,10 +46,12 @@ set(nemsys_MOC_HDRS
 )
 
 set(nemsys_HDRS
+	src/serialization.h
 	src/AVLTree.h
 	src/Comparator.h
 	src/Iterator.h
 	src/Meno.h
+	src/Nemocnica.h
 	src/Pacient.h
 	src/RodCis.h
 )
@@ -70,4 +77,4 @@ add_executable(nemsys
 	${nemsys_QRC_SRCS}
 )
 
-target_link_libraries(nemsys ${QT_LIBRARIES})
+target_link_libraries(nemsys ${Boost_LIBRARIES} ${QT_LIBRARIES})
