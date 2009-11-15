@@ -8,7 +8,7 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Miroslav Bendik (), miroslav.bendik@gmail.com
+ *         Author:  Miroslav Bendik
  *        Company:  LinuxOS.sk
  *
  * =====================================================================================
@@ -22,14 +22,14 @@
 
 Meno::Meno()
 	: m_meno(QString()),
-	m_priezvisko(QString())
+	  m_priezvisko(QString())
 {
 }
 
 
 Meno::Meno(QString meno, QString priezvisko)
 	: m_meno(meno),
-	m_priezvisko(priezvisko)
+	  m_priezvisko(priezvisko)
 {
 }
 

@@ -8,7 +8,7 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Miroslav Bendik (), miroslav.bendik@gmail.com
+ *         Author:  Miroslav Bendik
  *        Company:  LinuxOS.sk
  *
  * =====================================================================================

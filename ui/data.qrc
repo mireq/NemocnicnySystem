@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/view-filter.png</file>
+    <file>icons/view-statistics.png</file>
+    <file>icons/view_text.png</file>
+    <file>icons/desktop-launch.png</file>
+    <file>icons/edit-find-user.png</file>
+    <file>icons/user-desktop.png</file>
     <file>icons/list-add.png</file>
     <file>icons/list-remove.png</file>
   </qresource>

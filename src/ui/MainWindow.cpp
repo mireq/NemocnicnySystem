@@ -1,12 +1,10 @@
 /*
  * =====================================================================================
  *
- *       Filename:  main.cpp
- *
- *    Description:  Nemocničný informačný systém
+ *       Filename:  MainWindow.cpp
  *
  *        Version:  1.0
- *        Created:  24.10.2009 13:43:28
+ *        Created:  14.11.2009 20:36:06
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,14 +14,16 @@
  * =====================================================================================
  */
 
-#include <QApplication>
 #include "MainWindow.h"
 
-int main(int argc, char *argv[])
+MainWindow::MainWindow(QWidget *parent)
+	: QMainWindow(parent)
 {
-	QApplication app(argc, argv);
-	MainWindow win;
-	win.show();
-	return app.exec();
+	setupUi(this);
+}
+
+
+MainWindow::~MainWindow()
+{
 }
 

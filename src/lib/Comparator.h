@@ -11,7 +11,7 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Miroslav Bendik (), miroslav.bendik@gmail.com
+ *         Author:  Miroslav Bendik
  *        Company:  LinuxOS.sk
  *
  * =====================================================================================
@@ -79,6 +79,22 @@ class PacientMenoComparator: public Comparator<DataT, KeyT>
 public:
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
+		const KeyT &b,
+		ComparatorBase::ComparisonType type);
+
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		DataT b,
+		ComparatorBase::ComparisonType type);
+};
+
+
+template <typename DataT, typename KeyT>
+class PacientPoistovnaComparator: public Comparator<DataT, KeyT>
+{
+public:
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
 		KeyT b,
 		ComparatorBase::ComparisonType type);
 
@@ -89,6 +105,20 @@ public:
 };
 
 
+template <typename DataT, typename KeyT>
+class NemocnicaNazovComparator: public Comparator<DataT, KeyT>
+{
+public:
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		const KeyT &b,
+		ComparatorBase::ComparisonType type);
+
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		DataT b,
+		ComparatorBase::ComparisonType type);
+};
 
 #endif   /* ----- #ifndef COMPARATOR_H  ----- */
 

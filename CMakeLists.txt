@@ -20,43 +20,58 @@ include(${QT_USE_FILE})
 
 find_package(Boost COMPONENTS serialization REQUIRED)
 
+set(SUBDIRS
+	src/lib
+	src/model
+	src/ui
+)
 
 include_directories(
 	"${PROJECT_BINARY_DIR}"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 	"${CMAKE_CURRENT_BINARY_DIR}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/src"
-	"${CMAKE_CURRENT_BINARY_DIR}/src"
 	${QT_INCLUDES}
 	${Boost_INCLUDE_DIRS}
 )
 
+foreach(SUBDIR ${SUBDIRS})
+	include_directories(
+		"${CMAKE_CURRENT_SOURCE_DIR}/${SUBDIR}"
+		"${CMAKE_CURRENT_BINARY_DIR}/${SUBDIR}"
+	)
+endforeach(SUBDIR)
+
 set(nemsys_SRCS
 	main.cpp
-	src/Comparator.cpp
-	src/Meno.cpp
-	src/Nemocnica.cpp
-	src/Pacient.cpp
-	src/PacientEdit.cpp
-	src/RodCis.cpp
+	src/lib/Comparator.cpp
+	src/lib/Meno.cpp
+	src/lib/Pacient.cpp
+	src/lib/RodCis.cpp
+	src/model/Nemocnica.cpp
+	src/model/NemocnicnySystem.cpp
+	src/ui/MainWindow.cpp
+	src/ui/PacientEdit.cpp
 )
 
 set(nemsys_MOC_HDRS
-	src/PacientEdit.h
+	src/ui/MainWindow.h
+	src/ui/PacientEdit.h
 )
 
 set(nemsys_HDRS
-	src/serialization.h
-	src/AVLTree.h
-	src/Comparator.h
-	src/Iterator.h
-	src/Meno.h
-	src/Nemocnica.h
-	src/Pacient.h
-	src/RodCis.h
+	src/lib/serialization.h
+	src/lib/AVLTree.h
+	src/lib/Comparator.h
+	src/lib/Iterator.h
+	src/lib/Meno.h
+	src/lib/Pacient.h
+	src/lib/RodCis.h
+	src/model/Nemocnica.h
+	src/model/NemocnicnySystem.h
 )
 
 set(nemsys_UIS
+	ui/MainWindow.ui
 	ui/PacientEdit.ui
 )
 

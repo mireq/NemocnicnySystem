@@ -1,12 +1,10 @@
 /*
  * =====================================================================================
  *
- *       Filename:  main.cpp
- *
- *    Description:  Nemocničný informačný systém
+ *       Filename:  Nemocnica.cpp
  *
  *        Version:  1.0
- *        Created:  24.10.2009 13:43:28
+ *        Created:  13.11.2009 09:48:28
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,14 +14,22 @@
  * =====================================================================================
  */
 
-#include <QApplication>
-#include "MainWindow.h"
+#include "Nemocnica.h"
 
-int main(int argc, char *argv[])
+
+Nemocnica::Nemocnica(const QString &nazov)
 {
-	QApplication app(argc, argv);
-	MainWindow win;
-	win.show();
-	return app.exec();
+	m_nazov = nazov;
+}
+
+
+Nemocnica::~Nemocnica()
+{
+}
+
+
+const QString &Nemocnica::nazov() const
+{
+	return m_nazov;
 }
 

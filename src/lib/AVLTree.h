@@ -12,7 +12,7 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Miroslav Bendik (), miroslav.bendik@gmail.com
+ *         Author:  Miroslav Bendik
  *        Company:  LinuxOS.sk
  *
  * =====================================================================================
@@ -51,19 +51,21 @@ public:
 	bool remove(const DataT &data);
 	bool hasKey(const KeyT &key);
 	int count() {return m_count;};
+
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int &)
 	{
 		ar & boost::serialization::make_nvp("root", m_rootNode);
 		ar & boost::serialization::make_nvp("count", m_count);
 	}
+
 	// -------------------------------- DuplicateDataException --------------------------------
 	class DuplicateDataException
 	{
 	public:
 		DataT data() const                        { return m_data; };
 	private:
-		DuplicateDataException(const DataT &data) { m_data = data; };
+		DuplicateDataException(const DataT &data) : m_data(data)  {};
 		DataT m_data;
 	friend class AVLTree;
 	};
@@ -114,12 +116,12 @@ private:
 	bool rotateR(AVLNodePtr &root);
 	bool rotateRL(AVLNodePtr &root);
 	bool rotateLR(AVLNodePtr &root);
-	bool insertIntoSubTree(AVLNode * &node, const DataT &data);
-	std::pair<bool, DataT *> removeFromSubTree(AVLNode * &node, const DataT &data, bool &changeHeight, ComparatorBase::ComparisonType sType);
-	void deleteSubTree(AVLNode * &node);
+	bool insertIntoSubTree(AVLNodePtr &node, const DataT &data);
+	std::pair<bool, DataT *> removeFromSubTree(AVLNodePtr &node, const DataT &data, bool &changeHeight, ComparatorBase::ComparisonType sType);
+	void deleteSubTree(AVLNodePtr &node);
 
 private:
-	AVLNode *m_rootNode;
+	AVLNodePtr m_rootNode;
 	ComparatorT<DataT, KeyT> m_comp;
 	int m_count;
 };
@@ -156,7 +158,7 @@ template < typename DataT,
 	template < typename T, typename U > class ComparatorT >
 bool AVLTree<DataT, KeyT, ComparatorT >::hasKey(const KeyT &key)
 {
-	AVLNode *node = m_rootNode;
+	AVLNodePtr node = m_rootNode;
 	while (node != NULL) {
 		ComparatorBase::ComparisonType comp_val = m_comp(node->data, key, ComparatorBase::ExactEql);
 		switch (comp_val) {
@@ -296,7 +298,7 @@ bool AVLTree<DataT, KeyT, ComparatorT >::rotateLR(AVLNodePtr &root)
 template < typename DataT,
  typename KeyT,
 	template < typename T, typename U > class ComparatorT >
-bool AVLTree<DataT, KeyT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const DataT &data)
+bool AVLTree<DataT, KeyT, ComparatorT>::insertIntoSubTree(AVLNodePtr &node, const DataT &data)
 {
 	if (node == NULL) {
 		node = new AVLNode(data);
@@ -316,7 +318,7 @@ bool AVLTree<DataT, KeyT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const
 	}
 	// Prvky sú rovnaké
 	else {
-		throw new DuplicateDataException(data);
+		throw DuplicateDataException(data);
 	}
 
 	signed char oldBalance = node->balance;
@@ -356,7 +358,7 @@ template < typename DataT,
  typename KeyT,
 	template < typename T, typename U > class ComparatorT >
 std::pair<bool, DataT *> AVLTree<DataT, KeyT, ComparatorT>::removeFromSubTree(
-	AVLNode * &node,
+	AVLNodePtr &node,
 	const DataT &data,
 	bool &changeHeight,
 	ComparatorBase::ComparisonType sType)
@@ -431,7 +433,7 @@ std::pair<bool, DataT *> AVLTree<DataT, KeyT, ComparatorT>::removeFromSubTree(
 		// Prvok má jediného syna - vymazávaný p rvok bude nahradený synom
 		else {
 			found = std::pair<bool, DataT *>(true, new DataT(node->data));
-			AVLNode *delNode = node;
+			AVLNodePtr delNode = node;
 			if (node->left == NULL) {
 				node = node->right;
 			}
@@ -468,7 +470,7 @@ std::pair<bool, DataT *> AVLTree<DataT, KeyT, ComparatorT>::removeFromSubTree(
 template < typename DataT,
  typename KeyT,
 	template < typename T, typename U > class ComparatorT >
-void AVLTree<DataT, KeyT, ComparatorT >::deleteSubTree(AVLNode * &node)
+void AVLTree<DataT, KeyT, ComparatorT >::deleteSubTree(AVLNodePtr &node)
 {
 	if (node == NULL) {
 		return;
