@@ -49,6 +49,7 @@ public:
 	Iterator find(const KeyT &key)  { return Iterator(this, key);          };
 	Iterator iterator()             { return Iterator(this);               };
 	bool remove(const DataT &data);
+	bool hasKey(const KeyT &key);
 	int count() {return m_count;};
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int &)
@@ -56,6 +57,16 @@ public:
 		ar & boost::serialization::make_nvp("root", m_rootNode);
 		ar & boost::serialization::make_nvp("count", m_count);
 	}
+	// -------------------------------- DuplicateDataException --------------------------------
+	class DuplicateDataException
+	{
+	public:
+		DataT data() const                        { return m_data; };
+	private:
+		DuplicateDataException(const DataT &data) { m_data = data; };
+		DataT m_data;
+	friend class AVLTree;
+	};
 
 private:
 	// -------------------------------- AVLNode --------------------------------
@@ -137,6 +148,24 @@ bool AVLTree<DataT, KeyT, ComparatorT >::remove(const DataT &data)
 	else {
 		return false;
 	}
+}
+
+
+template < typename DataT,
+ typename KeyT,
+	template < typename T, typename U > class ComparatorT >
+bool AVLTree<DataT, KeyT, ComparatorT >::hasKey(const KeyT &key)
+{
+	AVLNode *node = m_rootNode;
+	while (node != NULL) {
+		ComparatorBase::ComparisonType comp_val = m_comp(node->data, key, ComparatorBase::ExactEql);
+		switch (comp_val) {
+			case ComparatorBase::Gt: node = node->left; break;
+			case ComparatorBase::Lt: node = node->right; break;
+			default: return true;
+		}
+	}
+	return false;
 }
 
 
@@ -287,8 +316,7 @@ bool AVLTree<DataT, KeyT, ComparatorT>::insertIntoSubTree(AVLNode * &node, const
 	}
 	// Prvky sú rovnaké
 	else {
-		///@todo Výnimka
-		return false;
+		throw new DuplicateDataException(data);
 	}
 
 	signed char oldBalance = node->balance;
