@@ -27,16 +27,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLineEdit" name="menoEdit"/>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="priezviskoEdit"/>
-     </item>
-    </layout>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="datumLabel">
      <property name="text">
@@ -155,17 +145,26 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="rodneCisloEdit">
+    <widget class="MenoRCEdit" name="rodneCisloEdit">
      <property name="inputMask">
       <string>999999/9999; </string>
      </property>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="MenoRCEdit" name="menoEdit"/>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MenoRCEdit</class>
+   <extends>QLineEdit</extends>
+   <header>MenoRCEdit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>menoEdit</tabstop>
-  <tabstop>priezviskoEdit</tabstop>
   <tabstop>rodneCisloEdit</tabstop>
   <tabstop>datumNarodeniaEdit</tabstop>
   <tabstop>cisloPoistovneEdit</tabstop>

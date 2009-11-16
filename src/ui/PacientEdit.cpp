@@ -27,6 +27,10 @@ PacientEdit::PacientEdit(QWidget *parent)
 	m_pacient = new Pacient;
 	m_alergieModel = new QStringListModel;
 	setupUi(this);
+
+	menoEdit->setRezim(MenoRCEdit::Meno);
+	rodneCisloEdit->setRezim(MenoRCEdit::RodneCislo);
+
 	zoznamAlergiiList->setModel(m_alergieModel);
 
 	connect(pridajAlergiuButton, SIGNAL(clicked()), SLOT(pridajAlergiu()));
@@ -49,9 +53,8 @@ const Pacient &PacientEdit::pacient() const
 
 void PacientEdit::aktualizujPacient()
 {
-	Meno meno(menoEdit->text(), priezviskoEdit->text());
-	m_pacient->setMeno(meno);
-	m_pacient->setRodCislo(rodneCisloEdit->text());
+	m_pacient->setMeno(menoEdit->toMeno());
+	m_pacient->setRodCislo(rodneCisloEdit->toRodCis());
 	m_pacient->setDatumNarodenia(datumNarodeniaEdit->dateTime().date());
 	m_pacient->setPoistovna(cisloPoistovneEdit->value());
 	m_pacient->setAdresa(adresaEdit->toPlainText());

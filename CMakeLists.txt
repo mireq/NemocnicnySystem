@@ -50,6 +50,7 @@ set(nemsys_SRCS
 	src/model/Nemocnica.cpp
 	src/model/NemocnicnySystem.cpp
 	src/ui/MainWindow.cpp
+	src/ui/MenoRCEdit.cpp
 	src/ui/NemocnicaVyber.cpp
 	src/ui/NemocniceList.cpp
 	src/ui/PacientEdit.cpp
@@ -57,6 +58,7 @@ set(nemsys_SRCS
 
 set(nemsys_MOC_HDRS
 	src/ui/MainWindow.h
+	src/ui/MenoRCEdit.h
 	src/ui/NemocnicaVyber.h
 	src/ui/NemocniceList.h
 	src/ui/PacientEdit.h
