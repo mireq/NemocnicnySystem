@@ -32,8 +32,11 @@ public:
 	Nemocnica(const QString &nazov);
 	~Nemocnica();
 	const QString &nazov() const;
+	void setZrusena(bool zrusena);
+	bool zrusena() const;
 private:
 	QString m_nazov;
+	bool m_zrusena;
 	AVLTree<Pacient *, Meno, PacientMenoComparator> m_pacientiMeno;
 	AVLTree<Pacient *, int, PacientPoistovnaComparator> m_pacientiPoistovna;
 };

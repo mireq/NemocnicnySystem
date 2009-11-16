@@ -18,8 +18,11 @@
 #define  MAINWINDOW_H
 
 #include "ui_MainWindow.h"
+#include "NemocnicnySystem.h"
 
 #include <QMainWindow>
+
+class NemocnicaVyber;
 
 class MainWindow: public QMainWindow, private Ui::MainWindow
 {
@@ -27,6 +30,12 @@ Q_OBJECT
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
+private slots:
+	void vytvorenieNemocnice();
+	void zrusenieNemocnice(const QString &nazov = QString());
+private:
+	NemocnicnySystem m_nemocnicnySystem;
+	NemocnicaVyber *m_nemocnicaVyber;
 };
 
 #endif   /* ----- #ifndef MAINWINDOW_H  ----- */

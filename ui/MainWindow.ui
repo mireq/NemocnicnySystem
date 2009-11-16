@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
+    <width>558</width>
     <height>491</height>
    </rect>
   </property>
@@ -38,7 +38,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>460</width>
+             <width>546</width>
              <height>383</height>
             </rect>
            </property>
@@ -81,7 +81,7 @@
              </widget>
             </item>
             <item row="9" column="1">
-             <widget class="QCommandLinkButton" name="zrusenieButton">
+             <widget class="QCommandLinkButton" name="zrusenieNemocniceButton">
               <property name="text">
                <string>Zrušenie nemocnice</string>
               </property>
@@ -296,7 +296,7 @@ alebo rodné číslo</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>472</width>
+     <width>558</width>
      <height>17</height>
     </rect>
    </property>
@@ -396,6 +396,25 @@ alebo rodné číslo</string>
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>hladanieButton</tabstop>
+  <tabstop>vykonajHospitalizaciuButton</tabstop>
+  <tabstop>hospitalizovaniPacientiButton</tabstop>
+  <tabstop>podkladyButton</tabstop>
+  <tabstop>vytvorPacientaButton</tabstop>
+  <tabstop>vytvorenieNemocniceButton</tabstop>
+  <tabstop>zrusenieNemocniceButton</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>hladanieEdit</tabstop>
+  <tabstop>hladatButton</tabstop>
+  <tabstop>filterButton</tabstop>
+  <tabstop>filterTab</tabstop>
+  <tabstop>poistovnaSpin</tabstop>
+  <tabstop>poistovnaZobrazitButton</tabstop>
+  <tabstop>odEdit</tabstop>
+  <tabstop>doEdit</tabstop>
+  <tabstop>zobrazitButton</tabstop>
+ </tabstops>
  <resources>
   <include location="data.qrc"/>
  </resources>

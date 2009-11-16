@@ -51,6 +51,7 @@ public:
 	bool remove(const DataT &data);
 	bool hasKey(const KeyT &key);
 	int count() {return m_count;};
+	void deleteData();
 
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int &)
@@ -119,6 +120,7 @@ private:
 	bool insertIntoSubTree(AVLNodePtr &node, const DataT &data);
 	std::pair<bool, DataT *> removeFromSubTree(AVLNodePtr &node, const DataT &data, bool &changeHeight, ComparatorBase::ComparisonType sType);
 	void deleteSubTree(AVLNodePtr &node);
+	void deleteDataSubTree(AVLNodePtr &node);
 
 private:
 	AVLNodePtr m_rootNode;
@@ -168,6 +170,16 @@ bool AVLTree<DataT, KeyT, ComparatorT >::hasKey(const KeyT &key)
 		}
 	}
 	return false;
+}
+
+
+template < typename DataT,
+ typename KeyT,
+	template < typename T, typename U > class ComparatorT >
+void AVLTree<DataT, KeyT, ComparatorT >::deleteData()
+{
+	deleteDataSubTree(m_rootNode);
+	m_count = 0;
 }
 
 
@@ -466,7 +478,6 @@ std::pair<bool, DataT *> AVLTree<DataT, KeyT, ComparatorT>::removeFromSubTree(
 }
 
 
-
 template < typename DataT,
  typename KeyT,
 	template < typename T, typename U > class ComparatorT >
@@ -478,6 +489,23 @@ void AVLTree<DataT, KeyT, ComparatorT >::deleteSubTree(AVLNodePtr &node)
 	deleteSubTree(node->left);
 	deleteSubTree(node->right);
 	delete node;
+	node = NULL;
+}
+
+
+template < typename DataT,
+ typename KeyT,
+	template < typename T, typename U > class ComparatorT >
+void AVLTree<DataT, KeyT, ComparatorT >::deleteDataSubTree(AVLNodePtr &node)
+{
+	if (node == NULL) {
+		return;
+	}
+	delete node->data;
+	deleteDataSubTree(node->left);
+	deleteDataSubTree(node->right);
+	delete node;
+	node = NULL;
 }
 
 #endif   /* ----- #ifndef AVLTREE_H  ----- */

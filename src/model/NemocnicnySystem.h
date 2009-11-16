@@ -37,6 +37,8 @@ public:
 	~NemocnicnySystem();
 	void pridajNemocnicu(const QString &nazov);
 	bool odoberNemocnicu(const QString &nazov);
+	bool zrusNemocnicu(const QString &nazov);
+	Nemocnice::Iterator nemocnice() { return m_nemocnice.iterator(); };
 
 	// -------------------------------- NemocnicaDuplicitaException --------------------------------
 	class NemocnicaDuplicitaException

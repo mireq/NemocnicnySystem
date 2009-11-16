@@ -163,6 +163,17 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>menoEdit</tabstop>
+  <tabstop>priezviskoEdit</tabstop>
+  <tabstop>rodneCisloEdit</tabstop>
+  <tabstop>datumNarodeniaEdit</tabstop>
+  <tabstop>cisloPoistovneEdit</tabstop>
+  <tabstop>adresaEdit</tabstop>
+  <tabstop>zoznamAlergiiList</tabstop>
+  <tabstop>odoberAlergiuButton</tabstop>
+  <tabstop>pridajAlergiuButton</tabstop>
+ </tabstops>
  <resources>
   <include location="data.qrc"/>
  </resources>

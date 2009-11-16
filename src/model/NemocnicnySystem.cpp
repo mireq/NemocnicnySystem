@@ -24,6 +24,7 @@ NemocnicnySystem::NemocnicnySystem()
 
 NemocnicnySystem::~NemocnicnySystem()
 {
+	m_nemocnice.deleteData();
 }
 
 
@@ -33,9 +34,16 @@ void NemocnicnySystem::pridajNemocnicu(const QString &nazov)
 	try {
 		m_nemocnice.insert(novaNemocnica);
 	}
-	catch (Nemocnice::DuplicateDataException *e) {
+	catch (Nemocnice::DuplicateDataException &e) {
 		delete novaNemocnica;
-		throw NemocnicaDuplicitaException(nazov);
+		Nemocnice::Iterator it = m_nemocnice.find(nazov);
+		Nemocnica *nemocnica = it.next();
+		if (nemocnica->zrusena()) {
+			nemocnica->setZrusena(false);
+		}
+		else {
+			throw NemocnicaDuplicitaException(nazov);
+		}
 	}
 }
 
@@ -51,4 +59,17 @@ bool NemocnicnySystem::odoberNemocnicu(const QString &nazov)
 	}
 	return false;
 }
+
+
+bool NemocnicnySystem::zrusNemocnicu(const QString &nazov)
+{
+	Nemocnice::Iterator it = m_nemocnice.find(nazov);
+	if (it.hasNext()) {
+		Nemocnica *n = it.next();
+		n->setZrusena(true);
+		return true;
+	}
+	return false;
+}
+
 
