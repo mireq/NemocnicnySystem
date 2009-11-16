@@ -74,6 +74,22 @@ ComparatorBase::ComparisonType
 
 
 template <typename DataT, typename KeyT>
+class PacientRodCisComparator: public Comparator<DataT, KeyT>
+{
+public:
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		const KeyT &b,
+		ComparatorBase::ComparisonType type);
+
+	ComparatorBase::ComparisonType operator()(
+		DataT a,
+		DataT b,
+		ComparatorBase::ComparisonType type);
+};
+
+
+template <typename DataT, typename KeyT>
 class PacientMenoComparator: public Comparator<DataT, KeyT>
 {
 public:

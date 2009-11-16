@@ -32,10 +32,12 @@ public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
 private slots:
+	void vytvoreniePacienta();
 	void vytvorenieNemocnice();
 	void zrusenieNemocnice(const QString &nazov = QString());
 	void prepniAktualnyPohlad();
 	void updateHladanieButton();
+	void hladajPacienta();
 private:
 	void setupActions();
 	void connectActions();
@@ -43,12 +45,13 @@ private:
 	void resetHladatPohlad();
 	void resetHospitalizaciePohlad();
 	void resetPodkladyPohlad();
+
 private:
 	enum PohladIndex {
-		Desktop = 0,
-		Hladat = 1,
+		Desktop        = 0,
+		Hladat         = 1,
 		Hospitalizacie = 2,
-		Podklady = 3
+		Podklady       = 3
 	};
 	NemocnicnySystem m_nemocnicnySystem;
 	NemocnicaVyber *m_nemocnicaVyber;

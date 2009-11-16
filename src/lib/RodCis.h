@@ -26,6 +26,7 @@
 #define  RODCIS_H
 
 #include <ostream>
+#include <QString>
 #include "serialization.h"
 
 class RodCis
@@ -36,6 +37,7 @@ public:
 	RodCis();
 	RodCis(const char *rodCislo);
 	bool isValid() const;
+	QString toString() const;
 
 	bool inline operator <(const RodCis &other) const
 	{
@@ -82,7 +84,6 @@ public:
 
 private:
 	char m_rodCislo[RodCisloDlzka + 1];
-	bool m_valid;
 	friend std::ostream &operator << (std::ostream &os, RodCis &rodCislo);
 };
 

@@ -17,14 +17,14 @@
 #include "MainWindow.h"
 #include "NemocnicaVyber.h"
 #include "NemocniceList.h"
+#include "PacientEdit.h"
 
+#include <QVBoxLayout>
+#include <QDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QWizard>
 #include <QList>
-
-#include <QDebug>
-#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -45,6 +45,31 @@ MainWindow::~MainWindow()
 }
 
 
+void MainWindow::vytvoreniePacienta()
+{
+	QWizard vytvoreniePacientaWizard(this);
+	vytvoreniePacientaWizard.setWindowTitle(QString::fromUtf8("Vytvorenie nového pacienta"));
+	vytvoreniePacientaWizard.setOption(QWizard::NoBackButtonOnLastPage);
+	vytvoreniePacientaWizard.setButtonText(QWizard::FinishButton, QString::fromUtf8("Vytvoriť"));
+	PacientEdit *edt = new PacientEdit;
+	edt->setFinalPage(true);
+	vytvoreniePacientaWizard.addPage(edt);
+	if (vytvoreniePacientaWizard.exec() == QDialog::Accepted) {
+		try {
+			m_nemocnicnySystem.pridajPacienta(edt->pacient());
+		}
+		catch (NemocnicnySystem::PacientDuplicitaException &e) {
+			QMessageBox warn(QMessageBox::Warning,
+				QString::fromUtf8("Pacient už existuje"),
+				QString::fromUtf8("Pacient s rodným číslom '%1' už bol vložený.").arg(e.pacient().rodCislo().toString()),
+				QMessageBox::NoButton,
+				this);
+			warn.exec();
+		}
+	}
+}
+
+
 void MainWindow::vytvorenieNemocnice()
 {
 	QInputDialog nazovDialog(this);
@@ -59,7 +84,7 @@ void MainWindow::vytvorenieNemocnice()
 		QMessageBox warn(QMessageBox::Warning,
 			QString::fromUtf8("Nezadaný názov nemocnice"),
 			QString::fromUtf8("Nebol zadaný názov nemocnice"),
-			0,
+			QMessageBox::NoButton,
 			this);
 		warn.exec();
 		return;
@@ -73,7 +98,7 @@ void MainWindow::vytvorenieNemocnice()
 		QMessageBox warn(QMessageBox::Warning,
 			QString::fromUtf8("Nemocnica už existuje"),
 			QString::fromUtf8("Nemocnica s názvom '%1' už bola vložená do systému.").arg(e.nazov()),
-			0,
+			QMessageBox::NoButton,
 			this);
 		warn.exec();
 	}
@@ -84,16 +109,16 @@ void MainWindow::zrusenieNemocnice(const QString &nazov)
 {
 	QString nazovNemocnice = nazov;
 	if (nazovNemocnice.isNull()) {
-		QWizard *zrusenieNemocniceWizard = new QWizard(this);
-		zrusenieNemocniceWizard->setWindowTitle(QString::fromUtf8("Zrušenie nemocnice"));
+		QWizard zrusenieNemocniceWizard(this);
+		zrusenieNemocniceWizard.setWindowTitle(QString::fromUtf8("Zrušenie nemocnice"));
 		QList<QWizard::WizardButton> buttons;
-		zrusenieNemocniceWizard->setOption(QWizard::NoBackButtonOnLastPage);
-		zrusenieNemocniceWizard->setButtonText(QWizard::FinishButton, QString::fromUtf8("Odstrániť"));
+		zrusenieNemocniceWizard.setOption(QWizard::NoBackButtonOnLastPage);
+		zrusenieNemocniceWizard.setButtonText(QWizard::FinishButton, QString::fromUtf8("Odstrániť"));
 		NemocniceList *nemocniceList = new NemocniceList(m_nemocnicnySystem.nemocnice());
 		nemocniceList->setFinalPage(true);
-		zrusenieNemocniceWizard->addPage(nemocniceList);
+		zrusenieNemocniceWizard.addPage(nemocniceList);
 
-		if (zrusenieNemocniceWizard->exec() == QDialog::Accepted) {
+		if (zrusenieNemocniceWizard.exec() == QDialog::Accepted) {
 			nazovNemocnice = nemocniceList->vybranaNemocnica();
 		}
 		else {
@@ -145,6 +170,14 @@ void MainWindow::updateHladanieButton()
 }
 
 
+void MainWindow::hladajPacienta()
+{
+	if (!hladanieEdit->hasAcceptableInput()) {
+		return;
+	}
+}
+
+
 void MainWindow::setupActions()
 {
 	m_toolBarActions = new QActionGroup(this);
@@ -158,19 +191,22 @@ void MainWindow::setupActions()
 
 void MainWindow::connectActions()
 {
-	connect(actionDesktop, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
-	connect(actionHladat, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
+	connect(actionDesktop,        SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
+	connect(actionHladat,         SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 	connect(actionHospitalizacie, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
-	connect(actionPodklady, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
+	connect(actionPodklady,       SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 
+	connect(vytvorPacientaButton,      SIGNAL(clicked()), SLOT(vytvoreniePacienta()));
 	connect(vytvorenieNemocniceButton, SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
-	connect(zrusenieNemocniceButton, SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
+	connect(zrusenieNemocniceButton,   SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
 
-	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()), SLOT(vytvorenieNemocnice()));
+	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()),      SLOT(vytvorenieNemocnice()));
 	connect(m_nemocnicaVyber, SIGNAL(zrusNemocnicuClicked(QString)), SLOT(zrusenieNemocnice(QString)));
 
 	/* ----- Hľadanie pacienta ----- */
-	connect (hladanieEdit, SIGNAL(textChanged(QString)), SLOT(updateHladanieButton()));
+	connect(hladanieEdit,   SIGNAL(textChanged(QString)), SLOT(updateHladanieButton()));
+	connect(hladanieEdit,   SIGNAL(returnPressed()),      SLOT(hladajPacienta()));
+	connect(hladanieButton, SIGNAL(clicked()),            SLOT(hladajPacienta()));
 }
 
 

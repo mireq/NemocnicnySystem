@@ -22,7 +22,8 @@
 #include <QInputDialog>
 
 PacientEdit::PacientEdit(QWidget *parent)
-	: QWidget(parent)
+	: QWizardPage(parent),
+	  m_valid(false)
 {
 	m_pacient = new Pacient;
 	m_alergieModel = new QStringListModel;
@@ -35,6 +36,9 @@ PacientEdit::PacientEdit(QWidget *parent)
 
 	connect(pridajAlergiuButton, SIGNAL(clicked()), SLOT(pridajAlergiu()));
 	connect(odoberAlergiuButton, SIGNAL(clicked()), SLOT(odoberAlergiu()));
+
+	connect(menoEdit,       SIGNAL(textChanged(QString)), SLOT(aktualizujPacient()));
+	connect(rodneCisloEdit, SIGNAL(textChanged(QString)), SLOT(aktualizujPacient()));
 }
 
 
@@ -51,6 +55,12 @@ const Pacient &PacientEdit::pacient() const
 }
 
 
+bool PacientEdit::isComplete() const
+{
+	return m_valid;
+}
+
+
 void PacientEdit::aktualizujPacient()
 {
 	m_pacient->setMeno(menoEdit->toMeno());
@@ -59,6 +69,12 @@ void PacientEdit::aktualizujPacient()
 	m_pacient->setPoistovna(cisloPoistovneEdit->value());
 	m_pacient->setAdresa(adresaEdit->toPlainText());
 	m_pacient->setAlergie(m_alergieModel->stringList());
+
+	bool newValid = m_pacient->isValid();
+	if (newValid != m_valid) {
+		m_valid = newValid;
+		emit completeChanged();
+	}
 }
 
 

@@ -20,8 +20,6 @@
 
 #include "Pacient.h"
 
-#include <QDebug>
-
 Pacient::Pacient()
 	: m_poistovna(0),
 	  m_valid(false)
@@ -126,6 +124,12 @@ void Pacient::pridajAlergiu(const QString &alergia)
 void Pacient::odoberAlergiu(int index)
 {
 	m_alergie.removeAt(index);
+}
+
+
+bool Pacient::isValid() const
+{
+	return m_meno.isValid() && m_rodCislo.isValid();
 }
 
 

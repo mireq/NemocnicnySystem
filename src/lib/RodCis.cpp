@@ -20,20 +20,15 @@
 
 #include "RodCis.h"
 
-#include <QDebug>
-
 RodCis::RodCis()
-	: m_valid(false)
 {
-	for (int i = 0; i < RodCisloDlzka; ++i) {
-		m_rodCislo[i] = '0';
+	for (int i = 0; i < RodCisloDlzka + 1; ++i) {
+		m_rodCislo[i] = '\0';
 	}
-	m_rodCislo[RodCisloDlzka] = '\0';
 }
 
 
 RodCis::RodCis(const char *rodCislo)
-	: m_valid(false)
 {
 	char rc[RodCisloDlzka + 1];
 	rc[RodCisloDlzka] = '\0';
@@ -42,13 +37,13 @@ RodCis::RodCis(const char *rodCislo)
 		char znak = rodCislo[i];
 		if (i == 6) {
 			if (znak != '/') {
-				m_valid = false;
+				m_rodCislo[0] = '\0';
 				return;
 			}
 		}
 		else {
 			if (znak < '0' || znak > '9') {
-				m_valid = false;
+				m_rodCislo[0] = '\0';
 				return;
 			}
 			rc[idx] = znak;
@@ -58,13 +53,37 @@ RodCis::RodCis(const char *rodCislo)
 	for (int i = 0; i < RodCisloDlzka + 1; ++i) {
 		m_rodCislo[i] = rc[i];
 	}
-	m_valid = true;
 }
 
 
 bool RodCis::isValid() const
 {
-	return m_valid;
+	if (m_rodCislo[0] != '\0') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+QString RodCis::toString() const
+{
+	if (isValid()) {
+		char rc[RodCisloDlzka + 2];
+		rc[RodCisloDlzka + 1] = '\0';
+		for (int i = 0; i < 6; ++i) {
+			rc[i] = m_rodCislo[i];
+		}
+		rc[6] = '/';
+		for (int i = 6; i < 10; ++i) {
+			rc[i + 1] = m_rodCislo[i];
+		}
+		return QString(rc);
+	}
+	else {
+		return QString();
+	}
 }
 
 

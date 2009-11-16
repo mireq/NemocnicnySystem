@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PacientEdit</class>
- <widget class="QWidget" name="PacientEdit">
+ <widget class="QWizardPage" name="PacientEdit">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>414</height>
+    <width>465</width>
+    <height>277</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Editácia pacienta</string>
   </property>
+  <property name="title">
+   <string>Údaje o pacientovi</string>
+  </property>
   <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::ExpandingFieldsGrow</enum>
-   </property>
    <item row="0" column="0">
+    <widget class="QLabel" name="rodneCisloLabel">
+     <property name="text">
+      <string>&amp;Rodné číslo</string>
+     </property>
+     <property name="buddy">
+      <cstring>rodneCisloEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="MenoRCEdit" name="rodneCisloEdit">
+     <property name="inputMask">
+      <string>999999/9999; </string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
     <widget class="QLabel" name="menoLabel">
      <property name="text">
       <string>&amp;Meno a priezvisko</string>
@@ -26,6 +43,9 @@
       <cstring>menoEdit</cstring>
      </property>
     </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="MenoRCEdit" name="menoEdit"/>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="datumLabel">
@@ -134,26 +154,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="rodneCisloLabel">
-     <property name="text">
-      <string>&amp;Rodné číslo</string>
-     </property>
-     <property name="buddy">
-      <cstring>rodneCisloEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="MenoRCEdit" name="rodneCisloEdit">
-     <property name="inputMask">
-      <string>999999/9999; </string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="MenoRCEdit" name="menoEdit"/>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -164,8 +164,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>menoEdit</tabstop>
   <tabstop>rodneCisloEdit</tabstop>
+  <tabstop>menoEdit</tabstop>
   <tabstop>datumNarodeniaEdit</tabstop>
   <tabstop>cisloPoistovneEdit</tabstop>
   <tabstop>adresaEdit</tabstop>

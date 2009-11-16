@@ -25,6 +25,7 @@ NemocnicnySystem::NemocnicnySystem()
 NemocnicnySystem::~NemocnicnySystem()
 {
 	m_nemocnice.deleteData();
+	m_pacienti.deleteData();
 }
 
 
@@ -70,6 +71,19 @@ bool NemocnicnySystem::zrusNemocnicu(const QString &nazov)
 		return true;
 	}
 	return false;
+}
+
+
+void NemocnicnySystem::pridajPacienta(const Pacient &pacient)
+{
+	Pacient *novyPacient = new Pacient(pacient);
+	try {
+		m_pacienti.insert(novyPacient);
+	}
+	catch (Pacienti::DuplicateDataException &e) {
+		delete novyPacient;
+		throw PacientDuplicitaException(pacient);
+	}
 }
 
 

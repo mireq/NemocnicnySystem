@@ -18,28 +18,29 @@
 #define  PACIENTEDIT_H
 
 #include "ui_PacientEdit.h"
+#include <QWizardPage>
 
 class Pacient;
 class QStringListModel;
 
-class PacientEdit: public QWidget, private Ui::PacientEdit
+class PacientEdit: public QWizardPage, private Ui::PacientEdit
 {
 Q_OBJECT
 public:
 	PacientEdit(QWidget *parent = 0);
 	~PacientEdit();
 	const Pacient &pacient() const;
-
-public slots:
-	void aktualizujPacient();
+	bool isComplete() const;
 
 private slots:
+	void aktualizujPacient();
 	void pridajAlergiu();
 	void odoberAlergiu();
 
 private:
 	QStringListModel *m_alergieModel;
 	Pacient *m_pacient;
+	bool m_valid;
 };
 
 #endif   /* ----- #ifndef PACIENTEDIT_H  ----- */
