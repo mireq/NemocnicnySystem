@@ -203,7 +203,7 @@ void AVLTree<DataT, KeyT, ComparatorT >::Iterator::toFirst()
 				break;
 			}
 		}
-		if (m_comp(m_node->data, *m_key, ComparatorBase::Eql) != ComparatorBase::Eql) {
+		if (m_node != NULL && m_comp(m_node->data, *m_key, ComparatorBase::Eql) != ComparatorBase::Eql) {
 			moveNext();
 		}
 	}
@@ -246,7 +246,7 @@ void AVLTree<DataT, KeyT, ComparatorT >::Iterator::toLast()
 				break;
 			}
 		}
-		if (m_comp(m_node->data, *m_key, ComparatorBase::Eql) != ComparatorBase::Eql) {
+		if (m_node != NULL && m_comp(m_node->data, *m_key, ComparatorBase::Eql) != ComparatorBase::Eql) {
 			movePrevious();
 		}
 	}

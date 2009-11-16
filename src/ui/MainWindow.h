@@ -22,6 +22,7 @@
 
 #include <QMainWindow>
 
+class QActionGroup;
 class NemocnicaVyber;
 
 class MainWindow: public QMainWindow, private Ui::MainWindow
@@ -33,9 +34,25 @@ public:
 private slots:
 	void vytvorenieNemocnice();
 	void zrusenieNemocnice(const QString &nazov = QString());
+	void prepniAktualnyPohlad();
+	void updateHladanieButton();
 private:
+	void setupActions();
+	void connectActions();
+
+	void resetHladatPohlad();
+	void resetHospitalizaciePohlad();
+	void resetPodkladyPohlad();
+private:
+	enum PohladIndex {
+		Desktop = 0,
+		Hladat = 1,
+		Hospitalizacie = 2,
+		Podklady = 3
+	};
 	NemocnicnySystem m_nemocnicnySystem;
 	NemocnicaVyber *m_nemocnicaVyber;
+	QActionGroup *m_toolBarActions;
 };
 
 #endif   /* ----- #ifndef MAINWINDOW_H  ----- */

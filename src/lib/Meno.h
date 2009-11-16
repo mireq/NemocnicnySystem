@@ -35,6 +35,7 @@ class Meno
 public:
 	Meno();
 	Meno(QString meno, QString priezvisko);
+	bool isValid() const;
 
 	bool inline operator <(const Meno &other) const
 	{

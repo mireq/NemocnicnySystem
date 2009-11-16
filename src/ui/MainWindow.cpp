@@ -23,6 +23,9 @@
 #include <QWizard>
 #include <QList>
 
+#include <QDebug>
+#include <iostream>
+
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -30,10 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
 	m_nemocnicaVyber = new NemocnicaVyber;
 	nemocnicaToolBar->addWidget(m_nemocnicaVyber);
 
-	connect(vytvorenieNemocniceButton, SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
-	connect(zrusenieNemocniceButton, SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
-	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()), SLOT(vytvorenieNemocnice()));
-	connect(m_nemocnicaVyber, SIGNAL(zrusNemocnicuClicked(QString)), SLOT(zrusenieNemocnice(QString)));
+	setupActions();
+	connectActions();
+
+	actionDesktop->setChecked(true);
 }
 
 
@@ -93,8 +96,96 @@ void MainWindow::zrusenieNemocnice(const QString &nazov)
 		if (zrusenieNemocniceWizard->exec() == QDialog::Accepted) {
 			nazovNemocnice = nemocniceList->vybranaNemocnica();
 		}
+		else {
+			return;
+		}
 	}
 	m_nemocnicnySystem.zrusNemocnicu(nazovNemocnice);
 	m_nemocnicaVyber->aktualizujNemocnice(m_nemocnicnySystem.nemocnice());
+}
+
+
+void MainWindow::prepniAktualnyPohlad()
+{
+	switch (pohladStack->currentIndex())
+	{
+		case Hladat:         resetHladatPohlad();         break;
+		case Hospitalizacie: resetHospitalizaciePohlad(); break;
+		case Podklady:       resetPodkladyPohlad();       break;
+		default: break;
+	}
+
+	QAction *checked = m_toolBarActions->checkedAction();
+	if (checked == NULL) {
+		pohladStack->setCurrentIndex(Desktop);
+	}
+	else if (checked == actionDesktop) {
+		pohladStack->setCurrentIndex(Desktop);
+	}
+	else if (checked == actionHladat) {
+		pohladStack->setCurrentIndex(Hladat);
+	}
+	else if (checked == actionHospitalizacie) {
+		pohladStack->setCurrentIndex(Hospitalizacie);
+	}
+	else if (checked == actionPodklady) {
+		pohladStack->setCurrentIndex(Podklady);
+	}
+}
+
+
+void MainWindow::updateHladanieButton()
+{
+	if (hladanieEdit->hasAcceptableInput()) {
+		hladanieButton->setEnabled(true);
+	}
+	else {
+		hladanieButton->setEnabled(false);
+	}
+}
+
+
+void MainWindow::setupActions()
+{
+	m_toolBarActions = new QActionGroup(this);
+	m_toolBarActions->setExclusive(true);
+	m_toolBarActions->addAction(actionDesktop);
+	m_toolBarActions->addAction(actionHladat);
+	m_toolBarActions->addAction(actionHospitalizacie);
+	m_toolBarActions->addAction(actionPodklady);
+}
+
+
+void MainWindow::connectActions()
+{
+	connect(actionDesktop, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
+	connect(actionHladat, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
+	connect(actionHospitalizacie, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
+	connect(actionPodklady, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
+
+	connect(vytvorenieNemocniceButton, SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
+	connect(zrusenieNemocniceButton, SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
+
+	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()), SLOT(vytvorenieNemocnice()));
+	connect(m_nemocnicaVyber, SIGNAL(zrusNemocnicuClicked(QString)), SLOT(zrusenieNemocnice(QString)));
+
+	/* ----- Hľadanie pacienta ----- */
+	connect (hladanieEdit, SIGNAL(textChanged(QString)), SLOT(updateHladanieButton()));
+}
+
+
+void MainWindow::resetHladatPohlad()
+{
+	hladanieEdit->setText(QString());
+}
+
+
+void MainWindow::resetHospitalizaciePohlad()
+{
+}
+
+
+void MainWindow::resetPodkladyPohlad()
+{
 }
 

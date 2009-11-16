@@ -35,6 +35,7 @@ public:
 
 	RodCis();
 	RodCis(const char *rodCislo);
+	bool isValid() const;
 
 	bool inline operator <(const RodCis &other) const
 	{
@@ -81,6 +82,7 @@ public:
 
 private:
 	char m_rodCislo[RodCisloDlzka + 1];
+	bool m_valid;
 	friend std::ostream &operator << (std::ostream &os, RodCis &rodCislo);
 };
 

@@ -34,6 +34,15 @@ Meno::Meno(QString meno, QString priezvisko)
 }
 
 
+bool Meno::isValid() const
+{
+	if (m_meno.isNull() || m_priezvisko.isNull()) {
+		return false;
+	}
+	return true;
+}
+
+
 std::ostream &operator << (std::ostream &os, Meno &meno)
 {
 	os << "Meno   " << meno.m_meno.toUtf8().data() << std::endl << "Priezv " << meno.m_priezvisko.toUtf8().data() << std::endl;

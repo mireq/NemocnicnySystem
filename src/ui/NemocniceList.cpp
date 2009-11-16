@@ -29,7 +29,10 @@ NemocniceList::NemocniceList(NemocnicnySystem::Nemocnice::Iterator it, QWidget *
 
 	QStringList nemocnice;
 	while (it.hasNext()) {
-		nemocnice.append(it.next()->nazov());
+		Nemocnica *nemocnica = it.next();
+		if (!nemocnica->zrusena()) {
+			nemocnice.append(nemocnica->nazov());
+		}
 	}
 
 	QVBoxLayout *layout = new QVBoxLayout;

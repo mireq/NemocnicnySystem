@@ -23,7 +23,8 @@
 #include <QDebug>
 
 Pacient::Pacient()
-	: m_valid(false)
+	: m_poistovna(0),
+	  m_valid(false)
 {
 }
 
@@ -63,33 +64,8 @@ void Pacient::setRodCislo(const RodCis &rodCislo)
 
 void Pacient::setRodCislo(QString rodCislo)
 {
-	if (rodCislo.length() != 11) {
-		m_valid = false;
-		return;
-	}
-
-	char rc[RodCis::RodCisloDlzka];
-	int idx = 0;
-	for (int i = 0; i < 11; ++i) {
-		QChar znak = rodCislo[i];
-		if (i == 6) {
-			if (znak != '/') {
-				m_valid = false;
-				return;
-			}
-		}
-		else {
-			char zn = znak.toLatin1();
-			if (zn < '0' || zn > '9') {
-				m_valid = false;
-				return;
-			}
-			rc[idx] = zn;
-			idx++;
-		}
-	}
-	m_rodCislo = RodCis(rc);
-	m_valid = true;
+	m_rodCislo = RodCis(rodCislo.toUtf8().data());
+	m_valid = m_rodCislo.isValid();
 }
 
 
