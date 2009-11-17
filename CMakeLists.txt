@@ -57,6 +57,7 @@ set(nemsys_SRCS
 )
 
 set(nemsys_MOC_HDRS
+	src/model/NemocnicnySystem.h
 	src/ui/MainWindow.h
 	src/ui/MenoRCEdit.h
 	src/ui/NemocnicaVyber.h
@@ -73,7 +74,6 @@ set(nemsys_HDRS
 	src/lib/Pacient.h
 	src/lib/RodCis.h
 	src/model/Nemocnica.h
-	src/model/NemocnicnySystem.h
 )
 
 set(nemsys_UIS
@@ -100,3 +100,22 @@ add_executable(nemsys
 )
 
 target_link_libraries(nemsys ${Boost_LIBRARIES} ${QT_LIBRARIES})
+
+# podpora PCH
+# https://svn.kvirc.de/kvirc/browser/trunk/kvirc/cmake/modules/FindPCHSupport.cmake?rev=1454
+option(WANT_PCH "Whether to use pre-compiled headers" OFF)
+set(USE_PCH FALSE)
+if (WANT_PCH)
+	find_package(PCHSupport)
+	if (PCHSupport_FOUND)
+		add_definitions(-DUSE_PCH)
+		set(USE_PCH TRUE)
+		option(WANT_PCH "Whether to use pre-compiled headers""")
+		message(STATUS "Enabling precompiled headers for GCC ${gcc_compiler_version}")
+	endif (PCHSupport_FOUND)
+endif (WANT_PCH)
+
+if(USE_PCH)
+	add_precompiled_header(nemsys src/pch.h)
+endif(USE_PCH)
+
