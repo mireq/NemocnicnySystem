@@ -25,11 +25,14 @@
 #include <QMessageBox>
 #include <QWizard>
 #include <QList>
+#include <QCloseEvent>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
 	setupUi(this);
+	aktualizujTitulokOkna(m_nemocnicnySystem.zmenene(), m_nemocnicnySystem.nazovSuboru());
 	m_nemocnicaVyber = new NemocnicaVyber;
 	nemocnicaToolBar->addWidget(m_nemocnicaVyber);
 
@@ -45,14 +48,134 @@ MainWindow::~MainWindow()
 }
 
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	if (zatvorSubor()) {
+		event->accept();
+	}
+	else {
+		event->ignore();
+	}
+}
+
+
+void MainWindow::aktualizujTitulokOkna(bool zmenene, const QString &nazovSuboru)
+{
+	QString zmeneneStr = "";
+	QString nazovSuboruStr = "";
+	if (zmenene) {
+		zmeneneStr = QString::fromUtf8(" [zmenené]");
+	}
+	if (!nazovSuboru.isNull()) {
+		nazovSuboruStr = QString(" - ") + nazovSuboru;
+	}
+	QString titulok = QString::fromUtf8("Nemocničný informačný systém%1%2").arg(zmeneneStr).arg(nazovSuboruStr);
+	setWindowTitle(titulok);
+}
+
+
+void MainWindow::aktualizujNemocnice()
+{
+	m_nemocnicaVyber->aktualizujNemocnice(m_nemocnicnySystem.nemocnice());
+}
+
+
+void MainWindow::otvor()
+{
+	if (!zatvorSubor()) {
+		return;
+	}
+
+	QFileDialog dlg(this, QString::fromUtf8("Vyberte súboru"));
+	dlg.setFileMode(QFileDialog::ExistingFile);
+	if (dlg.exec() == QDialog::Accepted) {
+		QStringList files = dlg.selectedFiles();
+		if (files.length() > 0) {
+			QString fileName = files.takeFirst();
+			try {
+				m_nemocnicnySystem.otvor(fileName);
+			}
+			catch (NemocnicnySystem::SuborException &e) {
+				if (e.type() == NemocnicnySystem::SuborException::Access) {
+					QMessageBox warn(QMessageBox::Warning,
+						QString::fromUtf8("Nepodarilo sa otvoriť súbor"),
+						QString::fromUtf8("Súbor sa nepodarilo otvoriť pre čítanie."),
+						QMessageBox::NoButton,
+						this);
+					warn.exec();
+				}
+				else if (e.type() == NemocnicnySystem::SuborException::Format) {
+					QMessageBox warn(QMessageBox::Warning,
+						QString::fromUtf8("Nepodarilo sa otvoriť súbor"),
+						QString::fromUtf8("Súbor má nesprávny formát."),
+						QMessageBox::NoButton,
+						this);
+					warn.exec();
+				}
+			}
+		}
+	}
+}
+
+
+void MainWindow::uloz()
+{
+	ulozAko(m_nemocnicnySystem.nazovSuboru());
+}
+
+
+void MainWindow::ulozAko(const QString &fileName)
+{
+	QString subor = fileName;
+	if (subor.isNull()) {
+		QFileDialog dlg(this, QString::fromUtf8("Uloženie súboru"));
+		dlg.setFileMode(QFileDialog::AnyFile);
+		if (dlg.exec() == QDialog::Accepted) {
+			QStringList files = dlg.selectedFiles();
+			if (files.length() > 0) {
+				subor = files.takeFirst();
+			}
+		}
+		else {
+			return;
+		}
+	}
+
+	try {
+		m_nemocnicnySystem.uloz(subor);
+	}
+	catch (NemocnicnySystem::SuborException &e) {
+		QMessageBox warn(QMessageBox::Warning,
+			QString::fromUtf8("Nepodarilo sa uložiť súbor"),
+			QString::fromUtf8("Súbor sa nepodarilo otvoriť pre zápis."),
+			QMessageBox::NoButton,
+			this);
+		warn.exec();
+	}
+}
+
+
+void MainWindow::about()
+{
+}
+
+
+void MainWindow::aboutQt()
+{
+}
+
+
 void MainWindow::vytvoreniePacienta()
 {
 	QWizard vytvoreniePacientaWizard(this);
+	vytvoreniePacientaWizard.setPixmap(QWizard::LogoPixmap, QPixmap(":/icons/user-properties.png"));
+	vytvoreniePacientaWizard.setWindowIcon(QIcon(":/icons/user-properties.png"));
 	vytvoreniePacientaWizard.setWindowTitle(QString::fromUtf8("Vytvorenie nového pacienta"));
 	vytvoreniePacientaWizard.setOption(QWizard::NoBackButtonOnLastPage);
 	vytvoreniePacientaWizard.setButtonText(QWizard::FinishButton, QString::fromUtf8("Vytvoriť"));
 	PacientEdit *edt = new PacientEdit;
 	edt->setFinalPage(true);
+	edt->setSubTitle(QString::fromUtf8("Vyplňte prosím údaje o novom pacientovi."));
 	vytvoreniePacientaWizard.addPage(edt);
 	if (vytvoreniePacientaWizard.exec() == QDialog::Accepted) {
 		try {
@@ -92,7 +215,6 @@ void MainWindow::vytvorenieNemocnice()
 
 	try {
 		m_nemocnicnySystem.pridajNemocnicu(nazov);
-		m_nemocnicaVyber->aktualizujNemocnice(m_nemocnicnySystem.nemocnice());
 	}
 	catch (NemocnicnySystem::NemocnicaDuplicitaException &e) {
 		QMessageBox warn(QMessageBox::Warning,
@@ -126,7 +248,6 @@ void MainWindow::zrusenieNemocnice(const QString &nazov)
 		}
 	}
 	m_nemocnicnySystem.zrusNemocnicu(nazovNemocnice);
-	m_nemocnicaVyber->aktualizujNemocnice(m_nemocnicnySystem.nemocnice());
 }
 
 
@@ -191,19 +312,33 @@ void MainWindow::setupActions()
 
 void MainWindow::connectActions()
 {
+	// Zmena stavu modelu
+	connect(&m_nemocnicnySystem, SIGNAL(zmenaStavuSuboru(bool,QString)), SLOT(aktualizujTitulokOkna(bool,QString)));
+	connect(&m_nemocnicnySystem, SIGNAL(zmenaNemocnic()), SLOT(aktualizujNemocnice()));
+
+	// Menu
+	connect(actionOpen,    SIGNAL(triggered()), SLOT(otvor()));
+	connect(actionSave,    SIGNAL(triggered()), SLOT(uloz()));
+	connect(actionSaveAs,  SIGNAL(triggered()), SLOT(ulozAko()));
+	connect(actionAbout,   SIGNAL(triggered()), SLOT(about()));
+	connect(actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
+
+	// Zmena pohľadu
 	connect(actionDesktop,        SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 	connect(actionHladat,         SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 	connect(actionHospitalizacie, SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 	connect(actionPodklady,       SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 
+	// Akcie na hlavnom paneli (rampa :P)
 	connect(vytvorPacientaButton,      SIGNAL(clicked()), SLOT(vytvoreniePacienta()));
 	connect(vytvorenieNemocniceButton, SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
 	connect(zrusenieNemocniceButton,   SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
 
+	// Panel pre výber nemocníc
 	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()),      SLOT(vytvorenieNemocnice()));
 	connect(m_nemocnicaVyber, SIGNAL(zrusNemocnicuClicked(QString)), SLOT(zrusenieNemocnice(QString)));
 
-	/* ----- Hľadanie pacienta ----- */
+	// Hľadanie pacienta
 	connect(hladanieEdit,   SIGNAL(textChanged(QString)), SLOT(updateHladanieButton()));
 	connect(hladanieEdit,   SIGNAL(returnPressed()),      SLOT(hladajPacienta()));
 	connect(hladanieButton, SIGNAL(clicked()),            SLOT(hladajPacienta()));
@@ -223,5 +358,35 @@ void MainWindow::resetHospitalizaciePohlad()
 
 void MainWindow::resetPodkladyPohlad()
 {
+}
+
+
+bool MainWindow::zatvorSubor()
+{
+	if (m_nemocnicnySystem.zmenene()) {
+		QMessageBox msg(QMessageBox::Information,
+			QString::fromUtf8("Uložiť zmeny?"),
+			QString::fromUtf8("Chcete uložiť zmeny pred zatvorením súboru?"),
+			QMessageBox::Discard | QMessageBox::Cancel | QMessageBox::Save,
+			this
+		);
+		msg.setInformativeText(QString::fromUtf8("Pri neuložení budú zmeny stratené."));
+		msg.setDefaultButton(QMessageBox::Save);
+
+		switch (msg.exec()) {
+			case QMessageBox::Save:
+				uloz();
+				m_nemocnicnySystem.zatvor();
+				break;
+			case QMessageBox::Cancel:
+				return false;
+			case QMessageBox::Discard:
+				m_nemocnicnySystem.zatvor();
+				break;
+			default:
+				return false;
+		}
+	}
+	return true;
 }
 

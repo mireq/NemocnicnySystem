@@ -31,13 +31,25 @@ Q_OBJECT
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
+
+protected:
+	void closeEvent(QCloseEvent *event);
+
 private slots:
+	void aktualizujTitulokOkna(bool zmenene, const QString &nazovSuboru);
+	void aktualizujNemocnice();
+	void otvor();
+	void uloz();
+	void ulozAko(const QString &fileName = QString());
+	void about();
+	void aboutQt();
 	void vytvoreniePacienta();
 	void vytvorenieNemocnice();
 	void zrusenieNemocnice(const QString &nazov = QString());
 	void prepniAktualnyPohlad();
 	void updateHladanieButton();
 	void hladajPacienta();
+
 private:
 	void setupActions();
 	void connectActions();
@@ -45,6 +57,8 @@ private:
 	void resetHladatPohlad();
 	void resetHospitalizaciePohlad();
 	void resetPodkladyPohlad();
+
+	bool zatvorSubor();
 
 private:
 	enum PohladIndex {

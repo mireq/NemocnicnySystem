@@ -1,5 +1,13 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/help-about.png</file>
+    <file>icons/server-database.png</file>
+    <file>icons/user-properties.png</file>
+    <file>icons/help-contents.png</file>
+    <file>icons/application-exit.png</file>
+    <file>icons/document-open.png</file>
+    <file>icons/document-save.png</file>
+    <file>icons/document-save-as.png</file>
     <file>icons/view-filter.png</file>
     <file>icons/view-statistics.png</file>
     <file>icons/view_text.png</file>

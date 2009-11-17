@@ -35,6 +35,12 @@ const QString &Nemocnica::nazov() const
 }
 
 
+void Nemocnica::setNazov(const QString &nazov)
+{
+	m_nazov = nazov;
+}
+
+
 void Nemocnica::setZrusena(bool zrusena)
 {
 	m_zrusena = zrusena;

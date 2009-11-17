@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Editácia pacienta</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="data.qrc">
+    <normaloff>:/icons/user-properties.png</normaloff>:/icons/user-properties.png</iconset>
+  </property>
   <property name="title">
    <string>Údaje o pacientovi</string>
   </property>

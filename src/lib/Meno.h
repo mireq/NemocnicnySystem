@@ -84,7 +84,7 @@ public:
 	}
 
 	template <class Archive>
-	void serialize(Archive &ar, const unsigned int &)
+	void serialize(Archive &ar, const unsigned int &/*version*/)
 	{
 		ar & boost::serialization::make_nvp("k_meno", m_meno);
 		ar & boost::serialization::make_nvp("priezvisko", m_priezvisko);

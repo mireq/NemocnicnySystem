@@ -33,24 +33,58 @@
 
 typedef unsigned int SerializationVersion;
 
-
 template <class T>
-void SerializeClass(T &trieda, const char *name, const char *fileName)
-{
-	std::ofstream ofs(fileName);
-	boost::archive::xml_oarchive oa(ofs);
-	oa << boost::serialization::make_nvp(name, trieda);
-}
+class Serializer {
+public:
+	// -------------------------------- FileAccessException --------------------------------
+	class FileAccessException {
+	public:
+		enum AccessType {
+			Read  = 0,
+			Write = 1
+		};
+		AccessType type() const {return m_type; };
 
-template <class T>
-T UnserializeClass(const char *name, const char *fileName)
-{
-	std::ifstream ifs(fileName);
-	boost::archive::xml_iarchive ia(ifs);
-	T nove;
-	ia >> boost::serialization::make_nvp(name, nove);
-	return nove;
-}
+	private:
+		FileAccessException(AccessType type): m_type(type) {};
+		AccessType m_type;
+
+	friend class Serializer;
+	};
+
+	// -------------------------------- FileFormatException --------------------------------
+	class FileFormatException {
+	private:
+		FileFormatException() {};
+
+	friend class Serializer;
+	};
+
+	static void serialize(T &trieda, const char *name, const char *fileName)
+	{
+		std::ofstream ofs(fileName);
+		if (!ofs.is_open()) {
+			throw FileAccessException(FileAccessException::Write);
+		}
+		boost::archive::xml_oarchive oa(ofs);
+		oa << boost::serialization::make_nvp(name, trieda);
+	}
+
+	static void unserialize(T &trieda, const char *name, const char *fileName)
+	{
+		std::ifstream ifs(fileName);
+		if (!ifs.is_open()) {
+			throw FileAccessException(FileAccessException::Read);
+		}
+		try {
+			boost::archive::xml_iarchive ia(ifs);
+			ia >> boost::serialization::make_nvp(name, trieda);
+		}
+		catch (boost::archive::archive_exception &) {
+			throw FileFormatException();
+		}
+	}
+};
 
 namespace boost {
 namespace serialization {

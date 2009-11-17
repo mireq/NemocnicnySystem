@@ -23,17 +23,29 @@
 
 #include "AVLTree.h"
 #include "Pacient.h"
+#include "serialization.h"
 
 #include <QString>
 
 class Nemocnica
 {
 public:
+	Nemocnica(): m_zrusena(true) {};
 	Nemocnica(const QString &nazov);
 	~Nemocnica();
 	const QString &nazov() const;
+	void setNazov(const QString &nazov);
 	void setZrusena(bool zrusena);
 	bool zrusena() const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int &/*version*/)
+	{
+		ar & boost::serialization::make_nvp("nazov", m_nazov);
+		ar & boost::serialization::make_nvp("zrusena", m_zrusena);
+		ar & boost::serialization::make_nvp("pacienti_meno", m_pacientiMeno);
+		ar & boost::serialization::make_nvp("pacienti_poist", m_pacientiPoistovna);
+	}
 private:
 	QString m_nazov;
 	bool m_zrusena;

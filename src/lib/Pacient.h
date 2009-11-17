@@ -59,7 +59,7 @@ public:
 	bool isValid() const;
 
 	template <class Archive>
-	void serialize(Archive &ar, const unsigned int &)
+	void serialize(Archive &ar, const unsigned int &/*version*/)
 	{
 		ar & boost::serialization::make_nvp("rc", m_rodCislo);
 		ar & boost::serialization::make_nvp("meno", m_meno);
