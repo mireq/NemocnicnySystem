@@ -36,6 +36,7 @@ public:
 	Meno();
 	Meno(QString meno, QString priezvisko);
 	bool isValid() const;
+	QString toString() const;
 
 	bool inline operator <(const Meno &other) const
 	{
@@ -84,7 +85,7 @@ public:
 	}
 
 	template <class Archive>
-	void serialize(Archive &ar, const unsigned int &/*version*/)
+	void serialize(Archive &ar, const unsigned int & /* version */)
 	{
 		ar & boost::serialization::make_nvp("k_meno", m_meno);
 		ar & boost::serialization::make_nvp("priezvisko", m_priezvisko);

@@ -73,13 +73,31 @@ bool MenoRCEdit::menoZapisane() const
 }
 
 
-RodCis MenoRCEdit::toRodCis() const
+void MenoRCEdit::setMeno(const ::Meno &meno)
+{
+	if (m_rezim == Auto || m_rezim == Meno) {
+		setInternRezim(Meno);
+		setText(meno.toString());
+	}
+}
+
+
+void MenoRCEdit::setRodCis(const ::RodCis &rodCis)
+{
+	if (m_rezim == Auto || m_rezim == RodneCislo) {
+		setInternRezim(RodneCislo);
+		setText(rodCis.toString());
+	}
+}
+
+
+::RodCis MenoRCEdit::toRodCis() const
 {
 	if (m_internRezim == RodneCislo && hasAcceptableInput()) {
-		return RodCis(text().toUtf8().data());
+		return ::RodCis(text().toUtf8().data());
 	}
 	else {
-		return RodCis();
+		return ::RodCis();
 	}
 }
 

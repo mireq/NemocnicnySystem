@@ -42,7 +42,10 @@ public:
 	bool rodCisZapisane() const;
 	bool menoZapisane() const;
 
-	RodCis toRodCis() const;
+	void setMeno(const ::Meno &meno);
+	void setRodCis(const ::RodCis &rodCis);
+
+	::RodCis toRodCis() const;
 	::Meno toMeno() const;
 
 private slots:

@@ -14,6 +14,7 @@
  * =====================================================================================
  */
 
+#include "HospitalizaciaWizard.h"
 #include "MainWindow.h"
 #include "NemocnicaVyber.h"
 #include "NemocniceList.h"
@@ -27,6 +28,8 @@
 #include <QList>
 #include <QCloseEvent>
 #include <QFileDialog>
+
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -88,6 +91,7 @@ void MainWindow::otvor()
 
 	QFileDialog dlg(this, QString::fromUtf8("Vyberte súboru"));
 	dlg.setFileMode(QFileDialog::ExistingFile);
+	dlg.setDirectory(QDir::home());
 	if (dlg.exec() == QDialog::Accepted) {
 		QStringList files = dlg.selectedFiles();
 		if (files.length() > 0) {
@@ -130,6 +134,7 @@ void MainWindow::ulozAko(const QString &fileName)
 	if (subor.isNull()) {
 		QFileDialog dlg(this, QString::fromUtf8("Uloženie súboru"));
 		dlg.setFileMode(QFileDialog::AnyFile);
+		dlg.setDirectory(QDir::home());
 		if (dlg.exec() == QDialog::Accepted) {
 			QStringList files = dlg.selectedFiles();
 			if (files.length() > 0) {
@@ -162,6 +167,15 @@ void MainWindow::about()
 
 void MainWindow::aboutQt()
 {
+}
+
+
+void MainWindow::vykonanieHospitalizacie()
+{
+	HospitalizaciaWizard hospitalizacia(&m_nemocnicnySystem, this);
+	hospitalizacia.exec();
+	Hospitalizacia h = hospitalizacia.hospitalizacia();
+	std::cout << h << std::endl;
 }
 
 
@@ -330,9 +344,10 @@ void MainWindow::connectActions()
 	connect(actionPodklady,       SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 
 	// Akcie na hlavnom paneli (rampa :P)
-	connect(vytvorPacientaButton,      SIGNAL(clicked()), SLOT(vytvoreniePacienta()));
-	connect(vytvorenieNemocniceButton, SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
-	connect(zrusenieNemocniceButton,   SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
+	connect(vykonajHospitalizaciuButton, SIGNAL(clicked()), SLOT(vykonanieHospitalizacie()));
+	connect(vytvorPacientaButton,        SIGNAL(clicked()), SLOT(vytvoreniePacienta()));
+	connect(vytvorenieNemocniceButton,   SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
+	connect(zrusenieNemocniceButton,     SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
 
 	// Panel pre výber nemocníc
 	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()),      SLOT(vytvorenieNemocnice()));

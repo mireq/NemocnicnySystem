@@ -127,6 +127,34 @@ void Pacient::odoberAlergiu(int index)
 }
 
 
+Nemocnica *Pacient::hospitalizovanyV() const
+{
+	if (m_hospitalizacie.count() == 0) {
+		return NULL;
+	}
+
+	const Hospitalizacia h = m_hospitalizacie.last();
+	if (!h.koniec().isValid()) {
+		return h.nemocnica();
+	}
+	else {
+		return NULL;
+	}
+}
+
+
+const QList<Hospitalizacia> &Pacient::hospitalizacie() const
+{
+	return m_hospitalizacie;
+}
+
+
+const Hospitalizacia &Pacient::poslednaHospitalizacia() const
+{
+	return m_hospitalizacie.last();
+}
+
+
 bool Pacient::isValid() const
 {
 	return m_meno.isValid() && m_rodCislo.isValid();

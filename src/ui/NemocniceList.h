@@ -31,8 +31,10 @@ public:
 	~NemocniceList();
 	bool isComplete() const;
 	const QString &vybranaNemocnica() const;
+
 private slots:
 	void changeComplete();
+
 private:
 	QListWidget *m_nemocniceList;
 	QString m_vybranaNemocnica;

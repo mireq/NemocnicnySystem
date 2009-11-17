@@ -97,6 +97,18 @@ void NemocnicnySystem::pridajPacienta(const Pacient &pacient)
 }
 
 
+NemocnicnySystem::Pacienti::Iterator NemocnicnySystem::najdiPacienta(const RodCis &rc)
+{
+	return m_pacienti.find(rc);
+}
+
+
+NemocnicnySystem::Nemocnice::Iterator NemocnicnySystem::najdiNemocnicu(const QString &nazov)
+{
+	return m_nemocnice.find(nazov);
+}
+
+
 void NemocnicnySystem::uloz(const QString &nazovSuboru)
 {
 	try {

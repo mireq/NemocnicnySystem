@@ -25,8 +25,11 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/nvp.hpp>
+#include <boost/serialization/split_free.hpp>
+#include <boost/serialization/collection_traits.hpp>
 
 #include <fstream>
+#include <QList>
 #include <QStringList>
 #include <QDate>
 
@@ -91,7 +94,7 @@ namespace serialization {
 
 
 template<class Archive>
-void save(Archive &archive, const QString &string, const unsigned int &)
+inline void save(Archive &archive, const QString &string, const unsigned int &)
 {
 	QByteArray text = string.toUtf8();
 	int length = text.length();
@@ -102,7 +105,7 @@ void save(Archive &archive, const QString &string, const unsigned int &)
 
 
 template<class Archive>
-void load(Archive &archive, QString &string, const unsigned int &)
+inline void load(Archive &archive, QString &string, const unsigned int &)
 {
 	int length;
 	archive >> make_nvp("length", length);
@@ -117,7 +120,7 @@ void load(Archive &archive, QString &string, const unsigned int &)
 
 
 template<class Archive>
-void save(Archive &archive, const QDate &date, const unsigned int &)
+inline void save(Archive &archive, const QDate &date, const unsigned int &)
 {
 	bool valid = date.isValid();
 	int day = date.toJulianDay();
@@ -128,7 +131,7 @@ void save(Archive &archive, const QDate &date, const unsigned int &)
 
 
 template<class Archive>
-void load(Archive &archive, QDate &date, const unsigned int &)
+inline void load(Archive &archive, QDate &date, const unsigned int &)
 {
 	bool valid = false;
 	int day = 0;
@@ -143,7 +146,7 @@ void load(Archive &archive, QDate &date, const unsigned int &)
 
 
 template<class Archive>
-void save(Archive &archive, const QStringList &list, const unsigned int &)
+inline void save(Archive &archive, const QStringList &list, const unsigned int &)
 {
 	int size = list.size();
 
@@ -155,7 +158,7 @@ void save(Archive &archive, const QStringList &list, const unsigned int &)
 
 
 template<class Archive>
-void load(Archive &archive, QStringList &list, const unsigned int &)
+inline void load(Archive &archive, QStringList &list, const unsigned int &)
 {
 	int size = 0;
 	list.clear();
@@ -169,6 +172,38 @@ void load(Archive &archive, QStringList &list, const unsigned int &)
 }
 
 
+template<class Archive, class T>
+inline void save(Archive &archive, const QList<T> &l, const unsigned int /* version */)
+{
+	int count = l.size();
+	archive << BOOST_SERIALIZATION_NVP(count);
+	foreach (const T &item, l) {
+		archive << BOOST_SERIALIZATION_NVP(item);
+	}
+}
+
+
+template<class Archive, class T>
+inline void load(Archive &archive, QList<T> &l, const unsigned int /* version */)
+{
+	l.clear();
+	int count = 0;
+	archive >> BOOST_SERIALIZATION_NVP(count);
+	for (int i = 0; i < count; ++i) {
+		T item;
+		archive >> BOOST_SERIALIZATION_NVP(item);
+		l.push_back(item);
+	}
+}
+
+
+template<class Archive, class T>
+inline void serialize(Archive &archive, QList<T> &l, const unsigned int file_version)
+{
+    boost::serialization::split_free(archive, l, file_version);
+}
+
+
 } // namespace serialization
 } // namespace boost
 
@@ -178,6 +213,7 @@ BOOST_SERIALIZATION_SPLIT_FREE(QDate)
 BOOST_CLASS_TRACKING(QDate, track_never)
 BOOST_SERIALIZATION_SPLIT_FREE(QStringList)
 BOOST_CLASS_TRACKING(QStringList, track_never)
+BOOST_SERIALIZATION_COLLECTION_TRAITS(QList)
 
 #endif   /* ----- #ifndef SERIALIZATION_H  ----- */
 

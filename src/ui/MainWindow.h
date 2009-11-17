@@ -43,6 +43,7 @@ private slots:
 	void ulozAko(const QString &fileName = QString());
 	void about();
 	void aboutQt();
+	void vykonanieHospitalizacie();
 	void vytvoreniePacienta();
 	void vytvorenieNemocnice();
 	void zrusenieNemocnice(const QString &nazov = QString());

@@ -44,11 +44,14 @@ endforeach(SUBDIR)
 set(nemsys_SRCS
 	main.cpp
 	src/lib/Comparator.cpp
+	src/lib/Hospitalizacia.cpp
 	src/lib/Meno.cpp
 	src/lib/Pacient.cpp
 	src/lib/RodCis.cpp
 	src/model/Nemocnica.cpp
 	src/model/NemocnicnySystem.cpp
+	src/ui/HospitalizaciaEdit.cpp
+	src/ui/HospitalizaciaWizard.cpp
 	src/ui/MainWindow.cpp
 	src/ui/MenoRCEdit.cpp
 	src/ui/NemocnicaVyber.cpp
@@ -58,6 +61,8 @@ set(nemsys_SRCS
 
 set(nemsys_MOC_HDRS
 	src/model/NemocnicnySystem.h
+	src/ui/HospitalizaciaEdit.h
+	src/ui/HospitalizaciaWizard.h
 	src/ui/MainWindow.h
 	src/ui/MenoRCEdit.h
 	src/ui/NemocnicaVyber.h
@@ -69,6 +74,7 @@ set(nemsys_HDRS
 	src/lib/serialization.h
 	src/lib/AVLTree.h
 	src/lib/Comparator.h
+	src/lib/Hospitalizacia.h
 	src/lib/Iterator.h
 	src/lib/Meno.h
 	src/lib/Pacient.h
@@ -77,6 +83,7 @@ set(nemsys_HDRS
 )
 
 set(nemsys_UIS
+	ui/HospitalizaciaEdit.ui
 	ui/MainWindow.ui
 	ui/NemocnicaVyber.ui
 	ui/PacientEdit.ui

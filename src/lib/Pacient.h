@@ -25,6 +25,7 @@
 #ifndef  PACIENT_H
 #define  PACIENT_H
 
+#include "Hospitalizacia.h"
 #include "Meno.h"
 #include "RodCis.h"
 #include "serialization.h"
@@ -32,6 +33,7 @@
 #include <QDate>
 #include <QString>
 #include <QStringList>
+#include <QList>
 
 #include <ostream>
 
@@ -55,11 +57,14 @@ public:
 	void setAlergie(const QStringList &alergie);
 	void pridajAlergiu(const QString &alergia);
 	void odoberAlergiu(int index);
+	Nemocnica *hospitalizovanyV() const;
+	const QList<Hospitalizacia> &hospitalizacie() const;
+	const Hospitalizacia &poslednaHospitalizacia() const;
 
 	bool isValid() const;
 
 	template <class Archive>
-	void serialize(Archive &ar, const unsigned int &/*version*/)
+	void serialize(Archive &ar, const unsigned int & /* version */)
 	{
 		ar & boost::serialization::make_nvp("rc", m_rodCislo);
 		ar & boost::serialization::make_nvp("meno", m_meno);
@@ -67,6 +72,7 @@ public:
 		ar & boost::serialization::make_nvp("poistovna", m_poistovna);
 		ar & boost::serialization::make_nvp("adresa", m_adresa);
 		ar & boost::serialization::make_nvp("alergie", m_alergie);
+		ar & boost::serialization::make_nvp("hosp", m_hospitalizacie);
 	}
 
 private:
@@ -76,10 +82,11 @@ private:
 	int m_poistovna;
 	QString m_adresa;
 	QStringList m_alergie;
+	QList<Hospitalizacia> m_hospitalizacie;
 
 	bool m_valid;
 
-	friend std::ostream &operator << (std::ostream &os, Pacient &pacient);
+friend std::ostream &operator << (std::ostream &os, Pacient &pacient);
 };
 
 std::ostream &operator << (std::ostream &os, Pacient &pacient);

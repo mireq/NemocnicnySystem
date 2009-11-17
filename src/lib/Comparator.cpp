@@ -117,6 +117,33 @@ ComparatorBase::ComparisonType
 
 template <>
 ComparatorBase::ComparisonType
+	PacientRodCisComparator<Pacient *, RodCis>::operator()(
+		Pacient *a,
+		const RodCis &b,
+		ComparatorBase::ComparisonType type)
+{
+	if (a->rodCislo() < b) {
+		if (type == Lt) {
+			return Eql;
+		}
+		else {
+			return Lt;
+		}
+	}
+	if (a->rodCislo() > b) {
+		if (type == Gt) {
+			return Eql;
+		}
+		else {
+			return Gt;
+		}
+	}
+	return Eql;
+}
+
+
+template <>
+ComparatorBase::ComparisonType
 	NemocnicaNazovComparator<Nemocnica *, QString>::operator()(
 		Nemocnica *a,
 		Nemocnica *b,

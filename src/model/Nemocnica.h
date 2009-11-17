@@ -39,7 +39,7 @@ public:
 	bool zrusena() const;
 
 	template <class Archive>
-	void serialize(Archive &ar, const unsigned int &/*version*/)
+	void serialize(Archive &ar, const unsigned int & /* version */)
 	{
 		ar & boost::serialization::make_nvp("nazov", m_nazov);
 		ar & boost::serialization::make_nvp("zrusena", m_zrusena);

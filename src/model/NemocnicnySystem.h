@@ -45,6 +45,8 @@ public:
 	bool odoberNemocnicu(const QString &nazov);
 	bool zrusNemocnicu(const QString &nazov);
 	void pridajPacienta(const Pacient &pacient);
+	Pacienti::Iterator najdiPacienta(const RodCis &rc);
+	Nemocnice::Iterator najdiNemocnicu(const QString &nazov);
 	Nemocnice::Iterator nemocnice() { return m_nemocnice.iterator(); };
 
 	void uloz(const QString &nazovSuboru);
@@ -54,7 +56,7 @@ public:
 	const QString &nazovSuboru() const;
 
 	template <class Archive>
-	void serialize(Archive &ar, const unsigned  int &/*version*/)
+	void serialize(Archive &ar, const unsigned  int & /* version */)
 	{
 		ar & boost::serialization::make_nvp("pacienti", m_pacienti);
 		ar & boost::serialization::make_nvp("nemocnice", m_nemocnice);

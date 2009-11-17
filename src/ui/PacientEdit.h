@@ -31,6 +31,12 @@ public:
 	~PacientEdit();
 	const Pacient &pacient() const;
 	bool isComplete() const;
+	void setPacient(Pacient *pacient);
+	bool rcAcceptable() const;
+	void setErrorMessage(const QString &message);
+
+signals:
+	void rcAcceptableChanged();
 
 private slots:
 	void aktualizujPacient();
@@ -38,9 +44,15 @@ private slots:
 	void odoberAlergiu();
 
 private:
+	void setWidgetEnabled(bool enabled);
+
+private:
 	QStringListModel *m_alergieModel;
 	Pacient *m_pacient;
 	bool m_valid;
+	bool m_rcValid;
+	bool m_enabled;
+	QString m_errorMessage;
 };
 
 #endif   /* ----- #ifndef PACIENTEDIT_H  ----- */
