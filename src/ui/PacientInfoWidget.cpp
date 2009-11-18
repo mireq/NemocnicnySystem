@@ -21,6 +21,7 @@
 #include <QTreeView>
 #include <QGroupBox>
 #include <QItemSelectionModel>
+#include <QHeaderView>
 
 #include <QDebug>
 
@@ -78,6 +79,9 @@ void PacientInfoWidget::setModel(PacientiInfoModel *model)
 		connect(selectionModel, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), SLOT(aktualizujPacienta(QModelIndex)));
 	}
 	m_pacientiList->setHidden(false);
+
+	QHeaderView *view = m_pacientiList->header();
+	view->setResizeMode(1, QHeaderView::Stretch);
 }
 
 

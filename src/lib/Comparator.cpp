@@ -183,6 +183,33 @@ ComparatorBase::ComparisonType
 
 template <>
 ComparatorBase::ComparisonType
+	PacientPoistovnaComparator<Pacient *, int>::operator()(
+		Pacient *a,
+		int b,
+		ComparatorBase::ComparisonType type)
+{
+	if (a->poistovna() < b) {
+		if (type == Lt) {
+			return Eql;
+		}
+		else {
+			return Lt;
+		}
+	}
+	if (a->poistovna() > b) {
+		if (type == Gt) {
+			return Eql;
+		}
+		else {
+			return Gt;
+		}
+	}
+	return Eql;
+}
+
+
+template <>
+ComparatorBase::ComparisonType
 	NemocnicaNazovComparator<Nemocnica *, QString>::operator()(
 		Nemocnica *a,
 		Nemocnica *b,

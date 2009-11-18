@@ -28,6 +28,7 @@
 #include <QList>
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QDate>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -43,6 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
 	actionDesktop->setChecked(true);
 	hladatStack->setEnabled(false);
 	hospitalizacieStack->setEnabled(false);
+
+	odEdit->setDate(QDate::currentDate());
+	doEdit->setDate(QDate::currentDate());
 }
 
 
@@ -288,6 +292,10 @@ void MainWindow::zmenAktualnuNemocnicu(const QString &nazov)
 		hladatStack->setEnabled(true);
 		hospitalizacieStack->setEnabled(true);
 	}
+
+	if (pohladStack->currentIndex() == Hospitalizacie) {
+		zobrazHospitalizacie();
+	}
 }
 
 
@@ -313,6 +321,7 @@ void MainWindow::prepniAktualnyPohlad()
 	}
 	else if (checked == actionHospitalizacie) {
 		pohladStack->setCurrentIndex(Hospitalizacie);
+		zobrazHospitalizacie();
 	}
 	else if (checked == actionPodklady) {
 		pohladStack->setCurrentIndex(Podklady);
@@ -411,17 +420,29 @@ void MainWindow::connectActions()
 	connect(hladanieEdit,   SIGNAL(textChanged(QString)), SLOT(updateHladanieButton()));
 	connect(hladanieEdit,   SIGNAL(returnPressed()),      SLOT(hladajPacienta()));
 	connect(hladanieButton, SIGNAL(clicked()),            SLOT(hladajPacienta()));
+
+	// Zobrazenie hospitalizácii
+	connect(filterButton,  SIGNAL(clicked()),           SLOT(zobrazHospitalizacie()));
+	connect(filterTab,     SIGNAL(currentChanged(int)), SLOT(zobrazHospitalizacie()));
+	connect(poistovnaSpin, SIGNAL(valueChanged(int)),   SLOT(zobrazHospitalizacie()));
+	connect(odEdit,        SIGNAL(dateChanged(QDate)),  SLOT(zobrazHospitalizacie()));
+	connect(doEdit,        SIGNAL(dateChanged(QDate)),  SLOT(zobrazHospitalizacie()));
+	connect(odEdit,        SIGNAL(dateChanged(QDate)),  SLOT(nastavDoMin(QDate)));
 }
 
 
 void MainWindow::resetHladatPohlad()
 {
 	hladanieEdit->setText(QString());
+	PacientiZoznam zoz;
+	PacientiInfoModel *model = new PacientiInfoModel(zoz);
+	pacientiHladanieList->setModel(model);
 }
 
 
 void MainWindow::resetHospitalizaciePohlad()
 {
+	zobrazHospitalizacie();
 }
 
 
@@ -457,5 +478,43 @@ bool MainWindow::zatvorSubor()
 		}
 	}
 	return true;
+}
+
+
+void MainWindow::zobrazHospitalizacie()
+{
+	QString nemocnicaNazov = m_nemocnicaVyber->aktualnaNemocnica();
+	if (nemocnicaNazov.isNull()) {
+		return;
+	}
+
+	Nemocnica *nemocnica = m_nemocnicnySystem.najdiNemocnicu(nemocnicaNazov).next();
+	PacientiZoznam zoz;
+	if (!filterButton->isChecked()) {
+		Nemocnica::PacientiPoistovna::Iterator it = nemocnica->hospitalizovaniPacienti();
+		while (it.hasNext()) {
+			zoz.append(it.next());
+		}
+	}
+	else {
+		// Filtrujeme podľa poisťovne
+		if (filterTab->currentWidget() == filterPoistovna) {
+			Nemocnica::PacientiPoistovna::Iterator it = nemocnica->hospitalizovaniPacientiPoistovna(poistovnaSpin->value());
+			while (it.hasNext()) {
+				zoz.append(it.next());
+			}
+		}
+		// Filtrujeme podľa času hospitalizácie od-do
+		else {
+		}
+	}
+	PacientiInfoModel *model = new PacientiInfoModel(zoz);
+	pacientiHospitalizacieList->setModel(model);
+}
+
+
+void MainWindow::nastavDoMin(const QDate &date)
+{
+	doEdit->setMinimumDate(date);
 }
 

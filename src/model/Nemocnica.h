@@ -41,8 +41,11 @@ public:
 	void setZrusena(bool zrusena);
 	bool zrusena() const;
 	void hospitalizuj(Pacient *pacient, Hospitalizacia hospitalizacia);
+	PacientiRC::Iterator pacienti();
 	PacientiRC::Iterator hladajPacienta(const RodCis &rc);
 	PacientiMeno::Iterator hladajPacienta(const Meno &meno);
+	PacientiPoistovna::Iterator hospitalizovaniPacienti();
+	PacientiPoistovna::Iterator hospitalizovaniPacientiPoistovna(int poistovna);
 
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int & /* version */)

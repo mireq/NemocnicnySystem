@@ -52,6 +52,8 @@ private slots:
 	void prepniAktualnyPohlad();
 	void updateHladanieButton();
 	void hladajPacienta();
+	void zobrazHospitalizacie();
+	void nastavDoMin(const QDate &date);
 
 private:
 	void setupActions();

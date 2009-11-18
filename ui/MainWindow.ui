@@ -211,6 +211,9 @@ alebo rodné číslo</string>
         </item>
         <item row="0" column="1">
          <widget class="QTabWidget" name="filterTab">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
             <horstretch>0</horstretch>
@@ -220,7 +223,7 @@ alebo rodné číslo</string>
           <property name="currentIndex">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="filterTabPage1">
+          <widget class="QWidget" name="filterPoistovna">
            <attribute name="title">
             <string>Poistenci zvolenej poisťovne</string>
            </attribute>
@@ -238,16 +241,9 @@ alebo rodné číslo</string>
             <item>
              <widget class="QSpinBox" name="poistovnaSpin"/>
             </item>
-            <item>
-             <widget class="QPushButton" name="poistovnaZobrazitButton">
-              <property name="text">
-               <string>Zobraziť</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="filterTabPage2">
+          <widget class="QWidget" name="filterCas">
            <attribute name="title">
             <string>Hospitalizovaní od-do</string>
            </attribute>
@@ -286,19 +282,12 @@ alebo rodné číslo</string>
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QPushButton" name="odDoZobrazitButton">
-              <property name="text">
-               <string>Zobraziť</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </widget>
          </widget>
         </item>
         <item row="1" column="0" colspan="2">
-         <widget class="QWidget" name="pacientiHospitalizacieList" native="true"/>
+         <widget class="PacientInfoWidget" name="pacientiHospitalizacieList" native="true"/>
         </item>
        </layout>
       </widget>
@@ -542,10 +531,8 @@ alebo rodné číslo</string>
   <tabstop>filterButton</tabstop>
   <tabstop>filterTab</tabstop>
   <tabstop>poistovnaSpin</tabstop>
-  <tabstop>poistovnaZobrazitButton</tabstop>
   <tabstop>odEdit</tabstop>
   <tabstop>doEdit</tabstop>
-  <tabstop>odDoZobrazitButton</tabstop>
  </tabstops>
  <resources>
   <include location="data.qrc"/>
@@ -564,6 +551,22 @@ alebo rodné číslo</string>
     <hint type="destinationlabel">
      <x>278</x>
      <y>245</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>filterButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>filterTab</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>339</x>
+     <y>93</y>
     </hint>
    </hints>
   </connection>

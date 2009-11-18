@@ -76,6 +76,12 @@ void Nemocnica::hospitalizuj(Pacient *pacient, Hospitalizacia hospitalizacia)
 }
 
 
+Nemocnica::PacientiRC::Iterator Nemocnica::pacienti()
+{
+	return m_hospitalizovaniRc.iterator();
+}
+
+
 Nemocnica::PacientiRC::Iterator Nemocnica::hladajPacienta(const RodCis &rc)
 {
 	return m_hospitalizovaniRc.find(rc);
@@ -85,5 +91,17 @@ Nemocnica::PacientiRC::Iterator Nemocnica::hladajPacienta(const RodCis &rc)
 Nemocnica::PacientiMeno::Iterator Nemocnica::hladajPacienta(const Meno &meno)
 {
 	return m_hospitalizovaniMeno.find(meno);
+}
+
+
+Nemocnica::PacientiPoistovna::Iterator Nemocnica::hospitalizovaniPacienti()
+{
+	return m_praveHospitalizovani.iterator();
+}
+
+
+Nemocnica::PacientiPoistovna::Iterator Nemocnica::hospitalizovaniPacientiPoistovna(int poistovna)
+{
+	return m_praveHospitalizovani.find(poistovna);
 }
 
