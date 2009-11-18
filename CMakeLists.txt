@@ -58,6 +58,7 @@ set(nemsys_SRCS
 	src/ui/NemocnicaVyber.cpp
 	src/ui/NemocniceList.cpp
 	src/ui/PacientEdit.cpp
+	src/ui/PacientInfo.cpp
 	src/ui/PacientInfoWidget.cpp
 )
 
@@ -71,6 +72,7 @@ set(nemsys_MOC_HDRS
 	src/ui/NemocnicaVyber.h
 	src/ui/NemocniceList.h
 	src/ui/PacientEdit.h
+	src/ui/PacientInfo.h
 	src/ui/PacientInfoWidget.h
 )
 
@@ -91,6 +93,7 @@ set(nemsys_UIS
 	ui/MainWindow.ui
 	ui/NemocnicaVyber.ui
 	ui/PacientEdit.ui
+	ui/PacientInfo.ui
 )
 
 set(nemsys_QRC

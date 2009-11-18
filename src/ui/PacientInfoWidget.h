@@ -21,8 +21,10 @@
 
 #include "PacientiInfoModel.h"
 
+class QGroupBox;
 class QSplitter;
 class QTreeView;
+class PacientInfo;
 
 class PacientInfoWidget: public QWidget
 {
@@ -31,10 +33,19 @@ public:
 	PacientInfoWidget(QWidget *parent = 0);
 	~PacientInfoWidget();
 	void setModel(PacientiInfoModel *model);
+
+private slots:
+	void aktualizujPacienta(const QModelIndex &index);
+
+private:
+	void zobrazPacienta(int row);
+
 private:
 	PacientiInfoModel *m_model;
 	QSplitter *m_splitter;
 	QTreeView *m_pacientiList;
+	QGroupBox *m_pacientInfoGroup;
+	PacientInfo *m_pacientInfo;
 };
 
 #endif   /* ----- #ifndef PACIENTINFOWIDGET_H  ----- */

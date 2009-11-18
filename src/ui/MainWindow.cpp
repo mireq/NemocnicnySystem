@@ -170,6 +170,13 @@ void MainWindow::aboutQt()
 }
 
 
+void MainWindow::rezimHladaniePacienta()
+{
+	actionHladat->setChecked(true);
+	prepniAktualnyPohlad();
+}
+
+
 void MainWindow::vykonanieHospitalizacie()
 {
 	HospitalizaciaWizard hospitalizaciaWizard(&m_nemocnicnySystem, this);
@@ -389,6 +396,7 @@ void MainWindow::connectActions()
 	connect(actionPodklady,       SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 
 	// Akcie na hlavnom paneli (rampa :P)
+	connect(hladaniePacientaButton,      SIGNAL(clicked()), SLOT(rezimHladaniePacienta()));;
 	connect(vykonajHospitalizaciuButton, SIGNAL(clicked()), SLOT(vykonanieHospitalizacie()));
 	connect(vytvorPacientaButton,        SIGNAL(clicked()), SLOT(vytvoreniePacienta()));
 	connect(vytvorenieNemocniceButton,   SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
