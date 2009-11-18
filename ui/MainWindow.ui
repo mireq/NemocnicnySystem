@@ -177,7 +177,7 @@ alebo rodné číslo</string>
          </widget>
         </item>
         <item row="2" column="0" colspan="3">
-         <widget class="QWidget" name="pacientiHladanieList" native="true"/>
+         <widget class="PacientInfoWidget" name="pacientiHladanieList" native="true"/>
         </item>
        </layout>
       </widget>
@@ -520,6 +520,12 @@ alebo rodné číslo</string>
    <class>MenoRCEdit</class>
    <extends>QLineEdit</extends>
    <header>MenoRCEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PacientInfoWidget</class>
+   <extends>QWidget</extends>
+   <header>PacientInfoWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

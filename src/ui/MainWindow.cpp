@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
 	connectActions();
 
 	actionDesktop->setChecked(true);
+	hladatStack->setEnabled(false);
+	hospitalizacieStack->setEnabled(false);
 }
 
 
@@ -269,6 +271,19 @@ void MainWindow::zrusenieNemocnice(const QString &nazov)
 }
 
 
+void MainWindow::zmenAktualnuNemocnicu(const QString &nazov)
+{
+	if (nazov.isNull()) {
+		hladatStack->setEnabled(false);
+		hospitalizacieStack->setEnabled(false);
+	}
+	else {
+		hladatStack->setEnabled(true);
+		hospitalizacieStack->setEnabled(true);
+	}
+}
+
+
 void MainWindow::prepniAktualnyPohlad()
 {
 	switch (pohladStack->currentIndex())
@@ -314,6 +329,32 @@ void MainWindow::hladajPacienta()
 	if (!hladanieEdit->hasAcceptableInput()) {
 		return;
 	}
+
+	QString nemocnicaNazov = m_nemocnicaVyber->aktualnaNemocnica();
+	if (nemocnicaNazov.isNull()) {
+		return;
+	}
+
+	Nemocnica *nemocnica = m_nemocnicnySystem.najdiNemocnicu(nemocnicaNazov).next();
+	PacientiZoznam zoz;
+	// Hľadanie podľa rodného čísla
+	if (hladanieEdit->rodCisZapisane()) {
+		Nemocnica::PacientiRC::Iterator it = nemocnica->hladajPacienta(hladanieEdit->toRodCis());
+		while (it.hasNext()) {
+			zoz.append(it.next());
+		}
+		PacientiInfoModel *model = new PacientiInfoModel(zoz);
+		pacientiHladanieList->setModel(model);
+	}
+	// Hľadanie podľa mena
+	else {
+		Nemocnica::PacientiMeno::Iterator it = nemocnica->hladajPacienta(hladanieEdit->toMeno());
+		while (it.hasNext()) {
+			zoz.append(it.next());
+		}
+		PacientiInfoModel *model = new PacientiInfoModel(zoz);
+		pacientiHladanieList->setModel(model);
+	}
 }
 
 
@@ -354,8 +395,9 @@ void MainWindow::connectActions()
 	connect(zrusenieNemocniceButton,     SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
 
 	// Panel pre výber nemocníc
-	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()),      SLOT(vytvorenieNemocnice()));
-	connect(m_nemocnicaVyber, SIGNAL(zrusNemocnicuClicked(QString)), SLOT(zrusenieNemocnice(QString)));
+	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()),        SLOT(vytvorenieNemocnice()));
+	connect(m_nemocnicaVyber, SIGNAL(zrusNemocnicuClicked(QString)),   SLOT(zrusenieNemocnice(QString)));
+	connect(m_nemocnicaVyber, SIGNAL(aktualnaNemocnicaZmena(QString)), SLOT(zmenAktualnuNemocnicu(QString)));
 
 	// Hľadanie pacienta
 	connect(hladanieEdit,   SIGNAL(textChanged(QString)), SLOT(updateHladanieButton()));

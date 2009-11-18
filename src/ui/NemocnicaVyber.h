@@ -30,11 +30,13 @@ public:
 	NemocnicaVyber(QWidget *parent = 0);
 	~NemocnicaVyber();
 	void aktualizujNemocnice(NemocnicnySystem::Nemocnice::Iterator it);
+	QString aktualnaNemocnica() const;
 signals:
 	void pridajNemocnicuClicked();
 	void zrusNemocnicuClicked(const QString &nazov);
+	void aktualnaNemocnicaZmena(const QString &nemocnica);
 private slots:
-	void updateRemoveButton();
+	void updateCurrentIndex();
 	void pridajNemocnicu();
 	void zrusNemocnicu();
 };

@@ -50,6 +50,7 @@ set(nemsys_SRCS
 	src/lib/RodCis.cpp
 	src/model/Nemocnica.cpp
 	src/model/NemocnicnySystem.cpp
+	src/model/PacientiInfoModel.cpp
 	src/ui/HospitalizaciaEdit.cpp
 	src/ui/HospitalizaciaWizard.cpp
 	src/ui/MainWindow.cpp
@@ -57,10 +58,12 @@ set(nemsys_SRCS
 	src/ui/NemocnicaVyber.cpp
 	src/ui/NemocniceList.cpp
 	src/ui/PacientEdit.cpp
+	src/ui/PacientInfoWidget.cpp
 )
 
 set(nemsys_MOC_HDRS
 	src/model/NemocnicnySystem.h
+	src/model/PacientiInfoModel.h
 	src/ui/HospitalizaciaEdit.h
 	src/ui/HospitalizaciaWizard.h
 	src/ui/MainWindow.h
@@ -68,6 +71,7 @@ set(nemsys_MOC_HDRS
 	src/ui/NemocnicaVyber.h
 	src/ui/NemocniceList.h
 	src/ui/PacientEdit.h
+	src/ui/PacientInfoWidget.h
 )
 
 set(nemsys_HDRS

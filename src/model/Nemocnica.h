@@ -30,6 +30,9 @@
 class Nemocnica
 {
 public:
+	typedef AVLTree<Pacient *, RodCis, PacientRodCisComparator> PacientiRC;
+	typedef AVLTree<Pacient *, Meno, PacientMenoComparator> PacientiMeno;
+	typedef AVLTree<Pacient *, int, PacientPoistovnaComparator> PacientiPoistovna;
 	Nemocnica(): m_zrusena(true) {};
 	Nemocnica(const QString &nazov);
 	~Nemocnica();
@@ -38,20 +41,24 @@ public:
 	void setZrusena(bool zrusena);
 	bool zrusena() const;
 	void hospitalizuj(Pacient *pacient, Hospitalizacia hospitalizacia);
+	PacientiRC::Iterator hladajPacienta(const RodCis &rc);
+	PacientiMeno::Iterator hladajPacienta(const Meno &meno);
 
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int & /* version */)
 	{
 		ar & boost::serialization::make_nvp("nazov", m_nazov);
 		ar & boost::serialization::make_nvp("zrusena", m_zrusena);
-		ar & boost::serialization::make_nvp("hosp", m_hospitalizovani);
+		ar & boost::serialization::make_nvp("hosprc", m_hospitalizovaniRc);
+		ar & boost::serialization::make_nvp("hospmeno", m_hospitalizovaniMeno);
 		ar & boost::serialization::make_nvp("pr_hosp", m_praveHospitalizovani);
 	}
 private:
 	QString m_nazov;
 	bool m_zrusena;
-	AVLTree<Pacient *, RodCis, PacientRodCisComparator> m_hospitalizovani;
-	AVLTree<Pacient *, int, PacientPoistovnaComparator> m_praveHospitalizovani;
+	PacientiRC m_hospitalizovaniRc;
+	PacientiMeno m_hospitalizovaniMeno;
+	PacientiPoistovna m_praveHospitalizovani;
 };
 
 #endif   /* ----- #ifndef NEMOCNICA_H  ----- */

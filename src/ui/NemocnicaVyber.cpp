@@ -20,9 +20,9 @@ NemocnicaVyber::NemocnicaVyber(QWidget *parent)
 	: QWidget(parent)
 {
 	setupUi(this);
-	updateRemoveButton();
+	updateCurrentIndex();
 
-	connect(nemocniceCombo, SIGNAL(currentIndexChanged(int)), SLOT(updateRemoveButton()));
+	connect(nemocniceCombo, SIGNAL(currentIndexChanged(int)), SLOT(updateCurrentIndex()));
 	connect(pridajButton, SIGNAL(clicked()), SLOT(pridajNemocnicu()));
 	connect(zrusButton, SIGNAL(clicked()), SLOT(zrusNemocnicu()));
 }
@@ -53,7 +53,18 @@ void NemocnicaVyber::aktualizujNemocnice(NemocnicnySystem::Nemocnice::Iterator i
 }
 
 
-void NemocnicaVyber::updateRemoveButton()
+QString NemocnicaVyber::aktualnaNemocnica() const
+{
+	if (nemocniceCombo->currentIndex() == -1) {
+		return QString();
+	}
+	else {
+		return nemocniceCombo->itemText(nemocniceCombo->currentIndex());
+	}
+}
+
+
+void NemocnicaVyber::updateCurrentIndex()
 {
 	bool enabled = false;
 	int idx = nemocniceCombo->currentIndex();
@@ -63,6 +74,8 @@ void NemocnicaVyber::updateRemoveButton()
 		}
 	}
 	zrusButton->setEnabled(enabled);
+
+	emit aktualnaNemocnicaZmena(aktualnaNemocnica());
 }
 
 

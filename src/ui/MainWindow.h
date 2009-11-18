@@ -47,6 +47,7 @@ private slots:
 	void vytvoreniePacienta();
 	void vytvorenieNemocnice();
 	void zrusenieNemocnice(const QString &nazov = QString());
+	void zmenAktualnuNemocnicu(const QString &nazov);
 	void prepniAktualnyPohlad();
 	void updateHladanieButton();
 	void hladajPacienta();

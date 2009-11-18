@@ -60,16 +60,30 @@ void Nemocnica::hospitalizuj(Pacient *pacient, Hospitalizacia hospitalizacia)
 			m_praveHospitalizovani.remove(pacient);
 		}
 
-		if (!m_hospitalizovani.hasValue(pacient)) {
-			m_hospitalizovani.insert(pacient);
-		}
 	}
 	else {
 		if (!m_praveHospitalizovani.hasValue(pacient)) {
 			m_praveHospitalizovani.insert(pacient);
 		}
 	}
+
+	if (!m_hospitalizovaniRc.hasValue(pacient)) {
+		m_hospitalizovaniRc.insert(pacient);
+		m_hospitalizovaniMeno.insert(pacient);
+	}
 	hospitalizacia.setNemocnica(this);
 	pacient->pridajHospitalizaciu(hospitalizacia);
+}
+
+
+Nemocnica::PacientiRC::Iterator Nemocnica::hladajPacienta(const RodCis &rc)
+{
+	return m_hospitalizovaniRc.find(rc);
+}
+
+
+Nemocnica::PacientiMeno::Iterator Nemocnica::hladajPacienta(const Meno &meno)
+{
+	return m_hospitalizovaniMeno.find(meno);
 }
 
