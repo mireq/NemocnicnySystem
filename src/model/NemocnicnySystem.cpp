@@ -46,6 +46,7 @@ void NemocnicnySystem::pridajNemocnicu(const QString &nazov)
 		if (nemocnica->zrusena()) {
 			nemocnica->setZrusena(false);
 			setZmenene(true);
+			emit zmenaNemocnic();
 		}
 		else {
 			throw NemocnicaDuplicitaException(nazov);
@@ -113,6 +114,12 @@ void NemocnicnySystem::hospitalizuj(Nemocnica *nemocnica, Pacient *pacient, cons
 {
 	nemocnica->hospitalizuj(pacient, hospitalizacia);
 	setZmenene(true);
+}
+
+
+NemocnicnySystem::Pacienti::Iterator NemocnicnySystem::pacienti()
+{
+	return m_pacienti.iterator();
 }
 
 

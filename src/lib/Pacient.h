@@ -58,6 +58,7 @@ public:
 	void pridajAlergiu(const QString &alergia);
 	void odoberAlergiu(int index);
 	bool hospitalizovanyVCase(const QDate &zaciatok, const QDate &koniec, Nemocnica *nemocnica = NULL) const;
+	int dniHospitalizacieVCase(const QDate &zaciatok, const QDate &koniec) const;
 	Nemocnica *hospitalizovanyV() const;
 	const QList<Hospitalizacia> &hospitalizacie() const;
 	const Hospitalizacia &poslednaHospitalizacia() const;

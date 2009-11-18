@@ -22,6 +22,7 @@
 
 #include "Pacient.h"
 
+#include <QDebug>
 
 Pacient::Pacient()
 	: m_poistovna(0),
@@ -144,6 +145,32 @@ bool Pacient::hospitalizovanyVCase(const QDate &zaciatok, const QDate &koniec, N
 	return false;
 }
 
+
+int Pacient::dniHospitalizacieVCase(const QDate &zaciatok, const QDate &koniec) const
+{
+	int dni = 0;
+
+	foreach (const Hospitalizacia &hospitalizacia, m_hospitalizacie) {
+		QDate zaciatokHosp = hospitalizacia.zaciatok();
+		QDate koniecHosp = hospitalizacia.koniec();
+	
+		if (zaciatokHosp.isNull()) {
+			zaciatokHosp = zaciatok;
+		}
+		if (koniecHosp.isNull()) {
+			koniecHosp = koniec;
+		}
+
+		if (hospitalizacia.koniec() >= zaciatok) {
+			if (hospitalizacia.zaciatok() <= koniec) {
+				koniecHosp = qMin(koniec, koniecHosp);
+				zaciatokHosp = qMax(zaciatok, zaciatokHosp);
+				dni += zaciatokHosp.daysTo(koniecHosp) + 1;
+			}
+		}
+	}
+	return dni;
+}
 
 Nemocnica *Pacient::hospitalizovanyV() const
 {

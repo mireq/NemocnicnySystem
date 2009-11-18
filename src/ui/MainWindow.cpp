@@ -29,6 +29,10 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QDate>
+#include <QTextDocument>
+#include <Qt>
+
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -47,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	odEdit->setDate(QDate::currentDate());
 	doEdit->setDate(QDate::currentDate());
+	mesiacEdit->setDate(QDate::currentDate());
 }
 
 
@@ -182,6 +187,20 @@ void MainWindow::rezimHladaniePacienta()
 }
 
 
+void MainWindow::rezimHospitalizovaniPacienti()
+{
+	actionHospitalizacie->setChecked(true);
+	prepniAktualnyPohlad();
+}
+
+
+void MainWindow::rezimPodklady()
+{
+	actionPodklady->setChecked(true);
+	prepniAktualnyPohlad();
+}
+
+
 void MainWindow::vykonanieHospitalizacie()
 {
 	HospitalizaciaWizard hospitalizaciaWizard(&m_nemocnicnySystem, this);
@@ -297,6 +316,9 @@ void MainWindow::zmenAktualnuNemocnicu(const QString &nazov)
 	if (pohladStack->currentIndex() == Hospitalizacie) {
 		zobrazHospitalizacie();
 	}
+	else if (pohladStack->currentIndex() == Podklady) {
+		zobrazPodklady();
+	}
 }
 
 
@@ -326,6 +348,7 @@ void MainWindow::prepniAktualnyPohlad()
 	}
 	else if (checked == actionPodklady) {
 		pohladStack->setCurrentIndex(Podklady);
+		zobrazPodklady();
 	}
 }
 
@@ -406,11 +429,13 @@ void MainWindow::connectActions()
 	connect(actionPodklady,       SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
 
 	// Akcie na hlavnom paneli (rampa :P)
-	connect(hladaniePacientaButton,      SIGNAL(clicked()), SLOT(rezimHladaniePacienta()));;
-	connect(vykonajHospitalizaciuButton, SIGNAL(clicked()), SLOT(vykonanieHospitalizacie()));
-	connect(vytvorPacientaButton,        SIGNAL(clicked()), SLOT(vytvoreniePacienta()));
-	connect(vytvorenieNemocniceButton,   SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
-	connect(zrusenieNemocniceButton,     SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
+	connect(hladaniePacientaButton,        SIGNAL(clicked()), SLOT(rezimHladaniePacienta()));;
+	connect(vykonajHospitalizaciuButton,   SIGNAL(clicked()), SLOT(vykonanieHospitalizacie()));
+	connect(hospitalizovaniPacientiButton, SIGNAL(clicked()), SLOT(rezimHospitalizovaniPacienti()));
+	connect(podkladyButton,                SIGNAL(clicked()), SLOT(rezimPodklady()));
+	connect(vytvorPacientaButton,          SIGNAL(clicked()), SLOT(vytvoreniePacienta()));
+	connect(vytvorenieNemocniceButton,     SIGNAL(clicked()), SLOT(vytvorenieNemocnice()));
+	connect(zrusenieNemocniceButton,       SIGNAL(clicked()), SLOT(zrusenieNemocnice()));
 
 	// Panel pre výber nemocníc
 	connect(m_nemocnicaVyber, SIGNAL(pridajNemocnicuClicked()),        SLOT(vytvorenieNemocnice()));
@@ -429,6 +454,8 @@ void MainWindow::connectActions()
 	connect(odEdit,        SIGNAL(dateChanged(QDate)),  SLOT(zobrazHospitalizacie()));
 	connect(doEdit,        SIGNAL(dateChanged(QDate)),  SLOT(zobrazHospitalizacie()));
 	connect(odEdit,        SIGNAL(dateChanged(QDate)),  SLOT(nastavDoMin(QDate)));
+
+	connect(mesiacEdit, SIGNAL(dateChanged(QDate)), SLOT(zobrazPodklady()));
 }
 
 
@@ -518,6 +545,46 @@ void MainWindow::zobrazHospitalizacie()
 	}
 	PacientiInfoModel *model = new PacientiInfoModel(zoz);
 	pacientiHospitalizacieList->setModel(model);
+}
+
+
+void MainWindow::zobrazPodklady()
+{
+	podkladyDisplay->setText("");
+
+	QDate zac = mesiacEdit->date().addDays(-mesiacEdit->date().day() + 1);
+	QDate kon = zac.addDays(zac.daysInMonth() - 1);
+
+	int poistovneDni[100];
+	for (int i = 0; i < 100; ++i) {
+		poistovneDni[i] = 0;
+	}
+
+	QList<Pacient *> pacienti;
+	NemocnicnySystem::Pacienti::Iterator pacientiIterator = m_nemocnicnySystem.pacienti();
+	while (pacientiIterator.hasNext()) {
+		Pacient *pacient = pacientiIterator.next();
+		int dni = pacient->dniHospitalizacieVCase(zac, kon);
+		if (dni > 0) {
+			poistovneDni[pacient->poistovna()] += dni;
+			pacienti.append(pacient);
+		}
+	}
+
+	QString text = QString::fromUtf8("<h2>Poisťovne</h2><table border=1 cellspacing=0><tr><th>Kód poisťovne</th><th>Dní hospitalizácie</th></tr>");
+	for (int i = 0; i < 100; ++i) {
+		if (poistovneDni[i] == 0) {
+			continue;
+		}
+		text += QString::fromUtf8("<tr><td>%1</td><td>%2</td></tr>").arg(i).arg(poistovneDni[i]);
+	}
+	text += QString::fromUtf8("</table><hr />");
+	text += QString::fromUtf8("<h2>Hospitalizovaní pacienti</h2><table border=1 cellspacing=0><tr><th>Rodné číslo</th><th>Meno</th></tr>");
+	foreach (Pacient *pacient, pacienti) {
+		text += QString::fromUtf8("<tr><td>%1</td><td>%2</td></tr>").arg(Qt::escape(pacient->rodCislo().toString())).arg(pacient->meno().toString());
+	}
+	text += QString::fromUtf8("</table>");
+	podkladyDisplay->setText(text);
 }
 
 

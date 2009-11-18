@@ -44,6 +44,8 @@ private slots:
 	void about();
 	void aboutQt();
 	void rezimHladaniePacienta();
+	void rezimHospitalizovaniPacienti();
+	void rezimPodklady();
 	void vykonanieHospitalizacie();
 	void vytvoreniePacienta();
 	void vytvorenieNemocnice();
@@ -53,6 +55,7 @@ private slots:
 	void updateHladanieButton();
 	void hladajPacienta();
 	void zobrazHospitalizacie();
+	void zobrazPodklady();
 	void nastavDoMin(const QDate &date);
 
 private:
