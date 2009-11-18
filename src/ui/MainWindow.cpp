@@ -172,11 +172,13 @@ void MainWindow::ulozAko(const QString &fileName)
 
 void MainWindow::about()
 {
+	QMessageBox::about(this, QString::fromUtf8("O aplikácii"), QString::fromUtf8("<b>Autor:</b><br />Miroslav Bendík"));
 }
 
 
 void MainWindow::aboutQt()
 {
+	QMessageBox::aboutQt(this, QString::fromUtf8("O Qt"));
 }
 
 
