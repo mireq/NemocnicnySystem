@@ -29,8 +29,6 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 
-#include <iostream>
-
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -172,10 +170,16 @@ void MainWindow::aboutQt()
 
 void MainWindow::vykonanieHospitalizacie()
 {
-	HospitalizaciaWizard hospitalizacia(&m_nemocnicnySystem, this);
-	hospitalizacia.exec();
-	Hospitalizacia h = hospitalizacia.hospitalizacia();
-	std::cout << h << std::endl;
+	HospitalizaciaWizard hospitalizaciaWizard(&m_nemocnicnySystem, this);
+	if (hospitalizaciaWizard.exec() == QDialog::Accepted) {
+		Nemocnica *nemocnica = hospitalizaciaWizard.nemocnica();
+		Pacient *pacient = hospitalizaciaWizard.pacient();
+		if (pacient == NULL) {
+			pacient = new Pacient(hospitalizaciaWizard.newPacient());
+			m_nemocnicnySystem.pridajPacienta(pacient);
+		}
+		m_nemocnicnySystem.hospitalizuj(nemocnica, pacient, hospitalizaciaWizard.hospitalizacia());
+	}
 }
 
 

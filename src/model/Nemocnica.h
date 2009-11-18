@@ -21,11 +21,11 @@
 #ifndef  NEMOCNICA_H
 #define  NEMOCNICA_H
 
+#include <QString>
+
 #include "AVLTree.h"
 #include "Pacient.h"
 #include "serialization.h"
-
-#include <QString>
 
 class Nemocnica
 {
@@ -37,20 +37,21 @@ public:
 	void setNazov(const QString &nazov);
 	void setZrusena(bool zrusena);
 	bool zrusena() const;
+	void hospitalizuj(Pacient *pacient, Hospitalizacia hospitalizacia);
 
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int & /* version */)
 	{
 		ar & boost::serialization::make_nvp("nazov", m_nazov);
 		ar & boost::serialization::make_nvp("zrusena", m_zrusena);
-		ar & boost::serialization::make_nvp("pacienti_meno", m_pacientiMeno);
-		ar & boost::serialization::make_nvp("pacienti_poist", m_pacientiPoistovna);
+		ar & boost::serialization::make_nvp("hosp", m_hospitalizovani);
+		ar & boost::serialization::make_nvp("pr_hosp", m_praveHospitalizovani);
 	}
 private:
 	QString m_nazov;
 	bool m_zrusena;
-	AVLTree<Pacient *, Meno, PacientMenoComparator> m_pacientiMeno;
-	AVLTree<Pacient *, int, PacientPoistovnaComparator> m_pacientiPoistovna;
+	AVLTree<Pacient *, RodCis, PacientRodCisComparator> m_hospitalizovani;
+	AVLTree<Pacient *, int, PacientPoistovnaComparator> m_praveHospitalizovani;
 };
 
 #endif   /* ----- #ifndef NEMOCNICA_H  ----- */

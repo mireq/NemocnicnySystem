@@ -35,6 +35,12 @@ HospitalizaciaEdit::~HospitalizaciaEdit()
 }
 
 
+void HospitalizaciaEdit::setNemocnica(const QString &nemocnica)
+{
+	nemocnicaDisplay->setText(nemocnica);
+}
+
+
 void HospitalizaciaEdit::setHospitalizacia(const Hospitalizacia &hospitalizacia)
 {
 	m_nemocnica = hospitalizacia.nemocnica();
@@ -42,10 +48,12 @@ void HospitalizaciaEdit::setHospitalizacia(const Hospitalizacia &hospitalizacia)
 	if (hospitalizacia.zaciatok().isValid()) {
 		odEdit->setDate(hospitalizacia.zaciatok());
 		odEdit->setEnabled(false);
+		ukoncenieCheckBox->setChecked(true);
 	}
 	else {
 		odEdit->setEnabled(true);
 		odEdit->setDate(QDate::currentDate());
+		ukoncenieCheckBox->setChecked(false);
 	}
 
 	if (hospitalizacia.koniec().isValid()) {
@@ -74,14 +82,13 @@ void HospitalizaciaEdit::setHospitalizacia(const Hospitalizacia &hospitalizacia)
 
 Hospitalizacia HospitalizaciaEdit::hospitalizacia() const
 {
-	Nemocnica *nemocnica = m_nemocnica;
 	QString diagnoza = diagnozaEdit->toPlainText();
 	QDate zaciatok = odEdit->date();
 	QDate koniec;
 	if (ukoncenieCheckBox->isChecked()) {
 		koniec = doEdit->date();
 	}
-	return Hospitalizacia(nemocnica, diagnoza, zaciatok, koniec);
+	return Hospitalizacia(NULL, diagnoza, zaciatok, koniec);
 }
 
 

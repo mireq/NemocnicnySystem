@@ -60,6 +60,7 @@ public:
 	Nemocnica *hospitalizovanyV() const;
 	const QList<Hospitalizacia> &hospitalizacie() const;
 	const Hospitalizacia &poslednaHospitalizacia() const;
+	void pridajHospitalizaciu(const Hospitalizacia &hospitalizacia);
 
 	bool isValid() const;
 
@@ -82,7 +83,7 @@ private:
 	int m_poistovna;
 	QString m_adresa;
 	QStringList m_alergie;
-	QList<Hospitalizacia> m_hospitalizacie;
+	QList<Hospitalizacia > m_hospitalizacie;
 
 	bool m_valid;
 

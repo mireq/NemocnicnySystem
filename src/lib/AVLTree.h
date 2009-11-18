@@ -27,7 +27,6 @@
 
 
 #include <cstdlib>
-#include <iostream>
 #include <list>
 #include <algorithm>
 
@@ -50,6 +49,7 @@ public:
 	Iterator iterator()             { return Iterator(this);               };
 	bool remove(const DataT &data);
 	bool hasKey(const KeyT &key);
+	bool hasValue(const DataT &data);
 	int count() {return m_count;};
 	void deleteData();
 
@@ -162,7 +162,25 @@ bool AVLTree<DataT, KeyT, ComparatorT >::hasKey(const KeyT &key)
 {
 	AVLNodePtr node = m_rootNode;
 	while (node != NULL) {
-		ComparatorBase::ComparisonType comp_val = m_comp(node->data, key, ComparatorBase::ExactEql);
+		ComparatorBase::ComparisonType comp_val = m_comp(node->data, key, ComparatorBase::Eql);
+		switch (comp_val) {
+			case ComparatorBase::Gt: node = node->left; break;
+			case ComparatorBase::Lt: node = node->right; break;
+			default: return true;
+		}
+	}
+	return false;
+}
+
+
+template < typename DataT,
+ typename KeyT,
+	template < typename T, typename U > class ComparatorT >
+bool AVLTree<DataT, KeyT, ComparatorT >::hasValue(const DataT &data)
+{
+	AVLNodePtr node = m_rootNode;
+	while (node != NULL) {
+		ComparatorBase::ComparisonType comp_val = m_comp(node->data, data, ComparatorBase::ExactEql);
 		switch (comp_val) {
 			case ComparatorBase::Gt: node = node->left; break;
 			case ComparatorBase::Lt: node = node->right; break;

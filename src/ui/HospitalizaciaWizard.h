@@ -36,6 +36,9 @@ public:
 	HospitalizaciaWizard(NemocnicnySystem *system, QWidget *parent = 0);
 	~HospitalizaciaWizard();
 	Hospitalizacia hospitalizacia() const;
+	Pacient *pacient() const;
+	Pacient newPacient() const;
+	Nemocnica *nemocnica() const;
 
 private slots:
 	void updatePacientEdit();

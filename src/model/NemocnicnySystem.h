@@ -45,6 +45,8 @@ public:
 	bool odoberNemocnicu(const QString &nazov);
 	bool zrusNemocnicu(const QString &nazov);
 	void pridajPacienta(const Pacient &pacient);
+	void pridajPacienta(Pacient *pacient);
+	void hospitalizuj(Nemocnica *nemocnica, Pacient *pacient, const Hospitalizacia &hospitalizacia);
 	Pacienti::Iterator najdiPacienta(const RodCis &rc);
 	Nemocnice::Iterator najdiNemocnicu(const QString &nazov);
 	Nemocnice::Iterator nemocnice() { return m_nemocnice.iterator(); };

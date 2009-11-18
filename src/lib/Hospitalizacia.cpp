@@ -41,6 +41,12 @@ Nemocnica *Hospitalizacia::nemocnica() const
 }
 
 
+void Hospitalizacia::setNemocnica(Nemocnica *nemocnica)
+{
+	m_nemocnica = nemocnica;
+}
+
+
 const QString &Hospitalizacia::diagnoza() const
 {
 	return m_diagnoza;

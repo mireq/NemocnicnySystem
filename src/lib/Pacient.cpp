@@ -18,7 +18,10 @@
  * \file Definícia pacienta.
  */
 
+#include "Hospitalizacia.h"
+
 #include "Pacient.h"
+
 
 Pacient::Pacient()
 	: m_poistovna(0),
@@ -152,6 +155,17 @@ const QList<Hospitalizacia> &Pacient::hospitalizacie() const
 const Hospitalizacia &Pacient::poslednaHospitalizacia() const
 {
 	return m_hospitalizacie.last();
+}
+
+
+void Pacient::pridajHospitalizaciu(const Hospitalizacia &hospitalizacia)
+{
+	Hospitalizacia h = hospitalizacia;
+	if (m_hospitalizacie.count() != 0 && m_hospitalizacie.last().koniec().isNull()) {
+		m_hospitalizacie.removeLast();
+	}
+
+	m_hospitalizacie.append(hospitalizacia);
 }
 
 

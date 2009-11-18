@@ -37,6 +37,7 @@ public:
 	Hospitalizacia();
 	Hospitalizacia(Nemocnica *nemocnica, const QString &diagnoza, const QDate &zaciatok, const QDate &koniec = QDate());
 	Nemocnica *nemocnica() const;
+	void setNemocnica(Nemocnica *nemocnica);
 	const QString &diagnoza() const;
 	const QDate &zaciatok() const;
 	const QDate &koniec() const;

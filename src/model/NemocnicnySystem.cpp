@@ -97,6 +97,25 @@ void NemocnicnySystem::pridajPacienta(const Pacient &pacient)
 }
 
 
+void NemocnicnySystem::pridajPacienta(Pacient *pacient)
+{
+	try {
+		m_pacienti.insert(pacient);
+		setZmenene(true);
+	}
+	catch (Pacienti::DuplicateDataException &e) {
+		throw PacientDuplicitaException(*pacient);
+	}
+}
+
+
+void NemocnicnySystem::hospitalizuj(Nemocnica *nemocnica, Pacient *pacient, const Hospitalizacia &hospitalizacia)
+{
+	nemocnica->hospitalizuj(pacient, hospitalizacia);
+	setZmenene(true);
+}
+
+
 NemocnicnySystem::Pacienti::Iterator NemocnicnySystem::najdiPacienta(const RodCis &rc)
 {
 	return m_pacienti.find(rc);

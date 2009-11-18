@@ -144,6 +144,45 @@ ComparatorBase::ComparisonType
 
 template <>
 ComparatorBase::ComparisonType
+	PacientPoistovnaComparator<Pacient *, int>::operator()(
+		Pacient *a,
+		Pacient *b,
+		ComparatorBase::ComparisonType type)
+{
+	if (a->poistovna() < b->poistovna()) {
+		if (type == Lt) {
+			return Eql;
+		}
+		else {
+			return Lt;
+		}
+	}
+	if (a->poistovna() > b->poistovna()) {
+		if (type == Gt) {
+			return Eql;
+		}
+		else {
+			return Gt;
+		}
+	}
+
+	// Sú rovnaké
+	if (type != ExactEql) {
+		return Eql;
+	}
+	// Chceme presné zaradenie - kontrolujeme rodné číslo
+	if (a->rodCislo() < b->rodCislo()) {
+		return Lt;
+	}
+	if (a->rodCislo() > b->rodCislo()) {
+		return Gt;
+	}
+	return Eql;
+}
+
+
+template <>
+ComparatorBase::ComparisonType
 	NemocnicaNazovComparator<Nemocnica *, QString>::operator()(
 		Nemocnica *a,
 		Nemocnica *b,

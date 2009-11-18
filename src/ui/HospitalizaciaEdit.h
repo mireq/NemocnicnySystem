@@ -29,6 +29,7 @@ Q_OBJECT
 public:
 	HospitalizaciaEdit(QWidget *parent = 0);
 	~HospitalizaciaEdit();
+	void setNemocnica(const QString &nemocnica);
 	void setHospitalizacia(const Hospitalizacia &hospitalizacia);
 	Hospitalizacia hospitalizacia() const;
 
