@@ -137,6 +137,7 @@ void MainWindow::ulozAko(const QString &fileName)
 	QString subor = fileName;
 	if (subor.isNull()) {
 		QFileDialog dlg(this, QString::fromUtf8("Uloženie súboru"));
+		dlg.setConfirmOverwrite(true);
 		dlg.setFileMode(QFileDialog::AnyFile);
 		dlg.setDirectory(QDir::home());
 		if (dlg.exec() == QDialog::Accepted) {
@@ -506,6 +507,13 @@ void MainWindow::zobrazHospitalizacie()
 		}
 		// Filtrujeme podľa času hospitalizácie od-do
 		else {
+			Nemocnica::PacientiRC::Iterator it = nemocnica->pacienti();
+			while (it.hasNext()) {
+				Pacient *pacient = it.next();
+				if (pacient->hospitalizovanyVCase(odEdit->date(), doEdit->date(), nemocnica)) {
+					zoz.append(pacient);
+				}
+			}
 		}
 	}
 	PacientiInfoModel *model = new PacientiInfoModel(zoz);

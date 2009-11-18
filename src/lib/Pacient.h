@@ -57,6 +57,7 @@ public:
 	void setAlergie(const QStringList &alergie);
 	void pridajAlergiu(const QString &alergia);
 	void odoberAlergiu(int index);
+	bool hospitalizovanyVCase(const QDate &zaciatok, const QDate &koniec, Nemocnica *nemocnica = NULL) const;
 	Nemocnica *hospitalizovanyV() const;
 	const QList<Hospitalizacia> &hospitalizacie() const;
 	const Hospitalizacia &poslednaHospitalizacia() const;

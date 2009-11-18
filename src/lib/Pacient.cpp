@@ -130,6 +130,21 @@ void Pacient::odoberAlergiu(int index)
 }
 
 
+bool Pacient::hospitalizovanyVCase(const QDate &zaciatok, const QDate &koniec, Nemocnica *nemocnica) const
+{
+	foreach (const Hospitalizacia &hospitalizacia, m_hospitalizacie) {
+		if (nemocnica == NULL || nemocnica == hospitalizacia.nemocnica()) {
+			if (hospitalizacia.koniec().isNull() || hospitalizacia.koniec() >= zaciatok) {
+				if (hospitalizacia.zaciatok().isNull() || hospitalizacia.zaciatok() <= koniec) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+
 Nemocnica *Pacient::hospitalizovanyV() const
 {
 	if (m_hospitalizacie.count() == 0) {
