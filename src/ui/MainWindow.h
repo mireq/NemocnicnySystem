@@ -41,6 +41,7 @@ private slots:
 	void otvor();
 	void uloz();
 	void ulozAko(const QString &fileName = QString());
+	void generuj();
 	void about();
 	void aboutQt();
 	void rezimHladaniePacienta();

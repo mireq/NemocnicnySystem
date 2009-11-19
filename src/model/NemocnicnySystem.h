@@ -42,6 +42,7 @@ public:
 	NemocnicnySystem();
 	~NemocnicnySystem();
 	void pridajNemocnicu(const QString &nazov);
+	void pridajNemocnicu(Nemocnica *nemocnica);
 	bool odoberNemocnicu(const QString &nazov);
 	bool zrusNemocnicu(const QString &nazov);
 	void pridajPacienta(const Pacient &pacient);

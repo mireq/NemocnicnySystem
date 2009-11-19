@@ -36,9 +36,20 @@ RodCis::RodCis(const char *rodCislo)
 	for (int i = 0; i < RodCisloDlzka + 1; ++i) {
 		char znak = rodCislo[i];
 		if (i == 6) {
-			if (znak != '/') {
+			/*if (znak != '/') {
 				m_rodCislo[0] = '\0';
 				return;
+			}*/
+			if (znak == '/') {
+				continue;
+			}
+			else if (znak < '0' || znak > '9') {
+				m_rodCislo[0] = '\0';
+				return;
+			}
+			else {
+				rc[idx] = znak;
+				idx++;
 			}
 		}
 		else {
@@ -48,6 +59,9 @@ RodCis::RodCis(const char *rodCislo)
 			}
 			rc[idx] = znak;
 			idx++;
+			if (idx == RodCisloDlzka) {
+				break;
+			}
 		}
 	}
 	for (int i = 0; i < RodCisloDlzka + 1; ++i) {

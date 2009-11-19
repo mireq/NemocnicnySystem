@@ -55,6 +55,18 @@ void NemocnicnySystem::pridajNemocnicu(const QString &nazov)
 }
 
 
+void NemocnicnySystem::pridajNemocnicu(Nemocnica *nemocnica)
+{
+	try {
+		m_nemocnice.insert(nemocnica);
+		setZmenene(true);
+	}
+	catch (Nemocnice::DuplicateDataException &e) {
+		delete nemocnica;
+	}
+}
+
+
 bool NemocnicnySystem::odoberNemocnicu(const QString &nazov)
 {
 	Nemocnice::Iterator it = m_nemocnice.find(nazov);
@@ -105,6 +117,7 @@ void NemocnicnySystem::pridajPacienta(Pacient *pacient)
 		setZmenene(true);
 	}
 	catch (Pacienti::DuplicateDataException &e) {
+		delete pacient;
 		throw PacientDuplicitaException(*pacient);
 	}
 }
@@ -169,9 +182,11 @@ void NemocnicnySystem::otvor(const QString &nazovSuboru)
 
 void NemocnicnySystem::zatvor()
 {
-	emit zmenaNemocnic();
 	m_nemocnice.deleteData();
 	m_pacienti.deleteData();
+	m_nazovSuboru = QString();
+	setZmenene(false);
+	emit zmenaNemocnic();
 }
 
 

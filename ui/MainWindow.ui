@@ -323,8 +323,8 @@ alebo rodné číslo</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>542</width>
-             <height>357</height>
+             <width>96</width>
+             <height>26</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_6">
@@ -367,6 +367,8 @@ alebo rodné číslo</string>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="actionGenerovat"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -556,6 +558,18 @@ alebo rodné číslo</string>
    </property>
    <property name="toolTip">
     <string>O knižnici Qt</string>
+   </property>
+  </action>
+  <action name="actionGenerovat">
+   <property name="icon">
+    <iconset resource="data.qrc">
+     <normaloff>:/icons/executable.png</normaloff>:/icons/executable.png</iconset>
+   </property>
+   <property name="text">
+    <string>Generovať</string>
+   </property>
+   <property name="toolTip">
+    <string>Generovať dáta</string>
    </property>
   </action>
  </widget>

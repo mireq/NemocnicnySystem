@@ -44,6 +44,7 @@ endforeach(SUBDIR)
 set(nemsys_SRCS
 	main.cpp
 	src/lib/Comparator.cpp
+	src/lib/DataGenerator.cpp
 	src/lib/Hospitalizacia.cpp
 	src/lib/Meno.cpp
 	src/lib/Pacient.cpp
@@ -80,6 +81,7 @@ set(nemsys_HDRS
 	src/lib/serialization.h
 	src/lib/AVLTree.h
 	src/lib/Comparator.h
+	src/lib/DataGenerator.h
 	src/lib/Hospitalizacia.h
 	src/lib/Iterator.h
 	src/lib/Meno.h

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/executable.png</file>
     <file>icons/help-about.png</file>
     <file>icons/server-database.png</file>
     <file>icons/user-properties.png</file>

@@ -14,6 +14,7 @@
  * =====================================================================================
  */
 
+#include "DataGenerator.h"
 #include "HospitalizaciaWizard.h"
 #include "MainWindow.h"
 #include "NemocnicaVyber.h"
@@ -31,8 +32,6 @@
 #include <QDate>
 #include <QTextDocument>
 #include <Qt>
-
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -169,6 +168,36 @@ void MainWindow::ulozAko(const QString &fileName)
 	}
 }
 
+
+void MainWindow::generuj()
+{
+	if (!zatvorSubor()) {
+		return;
+	}
+
+	actionDesktop->setChecked(true);
+	prepniAktualnyPohlad();
+
+	setUpdatesEnabled(false);
+	/*try {
+	}
+	catch (...) {
+	}*/
+	const QVector<Pacient *> pacienti = DataGenerator::generujPacientov(1000);
+	foreach (Pacient *pacient, pacienti) {
+		m_nemocnicnySystem.pridajPacienta(pacient);
+	}
+	const QVector<Nemocnica *> nemocnice = DataGenerator::generujNahodneNemocnice(10);
+	foreach (Nemocnica *nemocnica, nemocnice) {
+		m_nemocnicnySystem.pridajNemocnicu(nemocnica);
+	}
+	const QVector<QPair<Pacient *, Hospitalizacia> > hospitalizacie = DataGenerator::generujHospitalizacie(nemocnice, pacienti);
+	for (QVector<QPair<Pacient *, Hospitalizacia> >::const_iterator it = hospitalizacie.begin(); it != hospitalizacie.end(); ++it) {
+		m_nemocnicnySystem.hospitalizuj(it->second.nemocnica(), it->first, it->second);
+	}
+	setUpdatesEnabled(true);
+	aktualizujNemocnice();
+}
 
 void MainWindow::about()
 {
@@ -420,11 +449,12 @@ void MainWindow::connectActions()
 	connect(&m_nemocnicnySystem, SIGNAL(zmenaNemocnic()), SLOT(aktualizujNemocnice()));
 
 	// Menu
-	connect(actionOpen,    SIGNAL(triggered()), SLOT(otvor()));
-	connect(actionSave,    SIGNAL(triggered()), SLOT(uloz()));
-	connect(actionSaveAs,  SIGNAL(triggered()), SLOT(ulozAko()));
-	connect(actionAbout,   SIGNAL(triggered()), SLOT(about()));
-	connect(actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
+	connect(actionOpen,      SIGNAL(triggered()), SLOT(otvor()));
+	connect(actionSave,      SIGNAL(triggered()), SLOT(uloz()));
+	connect(actionSaveAs,    SIGNAL(triggered()), SLOT(ulozAko()));
+	connect(actionGenerovat, SIGNAL(triggered()), SLOT(generuj()));
+	connect(actionAbout,     SIGNAL(triggered()), SLOT(about()));
+	connect(actionAboutQt,   SIGNAL(triggered()), SLOT(aboutQt()));
 
 	// Zmena pohľadu
 	connect(actionDesktop,        SIGNAL(triggered()), SLOT(prepniAktualnyPohlad()));
@@ -480,6 +510,7 @@ void MainWindow::resetHospitalizaciePohlad()
 
 void MainWindow::resetPodkladyPohlad()
 {
+	podkladyDisplay->setText(QString());
 }
 
 

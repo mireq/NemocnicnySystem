@@ -17,11 +17,13 @@
  */
 
 #include <QApplication>
+#include <ctime>
 #include "MainWindow.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
+	qsrand(std::time(NULL));
 	MainWindow win;
 	win.show();
 	return app.exec();
