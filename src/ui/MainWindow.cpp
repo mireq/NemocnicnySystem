@@ -206,6 +206,7 @@ void MainWindow::rezimPodklady()
 void MainWindow::vykonanieHospitalizacie()
 {
 	HospitalizaciaWizard hospitalizaciaWizard(&m_nemocnicnySystem, this);
+	hospitalizaciaWizard.setWindowTitle(QString::fromUtf8("Pridanie hospitalizácie"));
 	if (hospitalizaciaWizard.exec() == QDialog::Accepted) {
 		Nemocnica *nemocnica = hospitalizaciaWizard.nemocnica();
 		Pacient *pacient = hospitalizaciaWizard.pacient();
@@ -343,6 +344,7 @@ void MainWindow::prepniAktualnyPohlad()
 	}
 	else if (checked == actionHladat) {
 		pohladStack->setCurrentIndex(Hladat);
+		resetHladatPohlad();
 	}
 	else if (checked == actionHospitalizacie) {
 		pohladStack->setCurrentIndex(Hospitalizacie);
@@ -515,6 +517,9 @@ void MainWindow::zobrazHospitalizacie()
 {
 	QString nemocnicaNazov = m_nemocnicaVyber->aktualnaNemocnica();
 	if (nemocnicaNazov.isNull()) {
+		PacientiZoznam zoz;
+		PacientiInfoModel *model = new PacientiInfoModel(zoz);
+		pacientiHospitalizacieList->setModel(model);
 		return;
 	}
 
