@@ -314,36 +314,7 @@ alebo rodné číslo</string>
          </widget>
         </item>
         <item row="1" column="0" colspan="2">
-         <widget class="QScrollArea" name="podkladyScroll">
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="QWidget" name="podkladyScrollWidgetContents">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>96</width>
-             <height>26</height>
-            </rect>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_6">
-            <item row="0" column="0">
-             <widget class="QLabel" name="podkladyDisplay">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::RichText</enum>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
+         <widget class="QTextBrowser" name="podkladyDisplay"/>
         </item>
        </layout>
       </widget>

@@ -14,12 +14,28 @@
  * =====================================================================================
  */
 
+/**
+ * \file
+ * Implementácia generátora náhodných hospitalizácií.
+ */
+
 #include "DataGenerator.h"
 #include "AVLTree.h"
 #include "Nemocnica.h"
 #include "Pacient.h"
 
 #include <iostream>
+
+const QChar DataGenerator::spoluhlasky[PocetSpoluhlasok] = {
+	0x0062, 0x0063, 0x010d, 0x0064, 0x010f, 0x0066,
+	0x0067, 0x0068, 0x006a, 0x006b, 0x006c, 0x013e,
+	0x006d, 0x006e, 0x0148, 0x0070, 0x0072, 0x0073,
+	0x0161, 0x0074, 0x0165, 0x0076, 0x007a, 0x017e
+};
+const QChar DataGenerator::samohlasky[PocetSamohlasok] = {
+	0x0061, 0x00e1, 0x0065, 0x00e9, 0x0069, 0x00ed,
+	0x006f, 0x00f3, 0x0075, 0x00fa, 0x0079, 0x00fd
+};
 
 QVector<Nemocnica *> DataGenerator::generujNahodneNemocnice(int pocet)
 {
@@ -71,7 +87,7 @@ QVector<QPair<Pacient *, Hospitalizacia> > DataGenerator::generujHospitalizacie(
 {
 	QVector<QPair<Pacient *, Hospitalizacia> > zoznamHospitalizacii;
 	foreach (Pacient *pacient, pacienti) {
-		int zaciatok = 300;
+		int zaciatok = 5000;
 		Nemocnica *nemocnica = nemocnice[qrand() % nemocnice.count()];
 		while (1) {
 			if (zaciatok < 2) {
@@ -83,13 +99,14 @@ QVector<QPair<Pacient *, Hospitalizacia> > DataGenerator::generujHospitalizacie(
 			QDate koniecDat = QDate::currentDate().addDays(-koniec);
 			zaciatok = koniec;
 			QString diagnoza = nahodnyText(2, 10);
-			if (qrand() % 2 > 0) {
-				if (zaciatok < 30 && qrand() % 4 == 0) {
+			if (qrand() % 8 > 0) {
+				if (zaciatok < 30 && qrand() % 2 == 0) {
 					zoznamHospitalizacii.append(QPair<Pacient *, Hospitalizacia>(pacient, Hospitalizacia(nemocnica, diagnoza, zaciatokDat, QDate())));
 				}
 				else {
 					zoznamHospitalizacii.append(QPair<Pacient *, Hospitalizacia>(pacient, Hospitalizacia(nemocnica, diagnoza, zaciatokDat, koniecDat)));
 				}
+				break;
 			}
 			else {
 				zoznamHospitalizacii.append(QPair<Pacient *, Hospitalizacia>(pacient, Hospitalizacia(nemocnica, diagnoza, zaciatokDat, koniecDat)));
@@ -102,19 +119,24 @@ QVector<QPair<Pacient *, Hospitalizacia> > DataGenerator::generujHospitalizacie(
 
 QString DataGenerator::nahodnyText(int min, int max)
 {
+	QString out;
 	int dlzka = min + qrand() % (max - min + 1);
-	char *text = new char[dlzka + 1];
-	text[dlzka] = '\0';
+	out.fill(' ', dlzka);
+	bool samohlaska = qrand() % 2;
 	for (int i = 0; i < dlzka; ++i) {
-		if (i == 0) {
-			text[i] = 'A' + qrand() % 25;
+		QChar znak;
+		if (samohlaska) {
+			znak = samohlasky[qrand() % PocetSamohlasok];
 		}
 		else {
-			text[i] = 'a' + qrand() % 25;
+			znak = spoluhlasky[qrand() % PocetSpoluhlasok];
 		}
+		if (i == 0) {
+			znak = znak.toUpper();
+		}
+		out[i] = znak;
+		samohlaska = !samohlaska;
 	}
-	QString out = text;
-	delete[] text;
 	return out;
 }
 

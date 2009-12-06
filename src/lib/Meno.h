@@ -19,7 +19,8 @@
  */
 
 /**
- * \file Deklarácia mena pacienta.
+ * \file
+ * Deklarácia mena pacienta.
  */
 
 #ifndef  MENO_H
@@ -40,6 +41,24 @@ public:
 
 	bool inline operator <(const Meno &other) const
 	{
+		// Odkomentovať pre porovnávanie na základe lokálnych nastavení
+		/*
+		int priezviskoComp = m_priezvisko.localeAwareCompare(other.m_priezvisko);
+		if (priezviskoComp < 0) {
+			return true;
+		}
+		if (priezviskoComp > 0) {
+			return false;
+		}
+
+		int menoComp = m_meno.localeAwareCompare(other.m_meno);
+		if (menoComp < 0) {
+			return true;
+		}
+		else {
+			return false;
+		}*/
+		
 		if (m_priezvisko < other.m_priezvisko) {
 			return true;
 		}
@@ -58,6 +77,25 @@ public:
 
 	bool inline operator >(const Meno &other) const
 	{
+		// Odkomentovať pre porovnávanie na základe lokálnych nastavení
+		/*
+		int priezviskoComp = m_priezvisko.localeAwareCompare(other.m_priezvisko);
+		if (priezviskoComp > 0) {
+			return true;
+		}
+		if (priezviskoComp < 0) {
+			return false;
+		}
+
+		int menoComp = m_meno.localeAwareCompare(other.m_meno);
+		if (menoComp > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		*/
+		
 		if (m_priezvisko > other.m_priezvisko) {
 			return true;
 		}
@@ -76,6 +114,17 @@ public:
 
 	bool inline operator ==(const Meno &other) const
 	{
+		// Odkomentovať pre porovnávanie na základe lokálnych nastavení
+		/*
+		if (m_priezvisko.localeAwareCompare(other.m_priezvisko) == 0 
+			&& m_meno.localeAwareCompare(other.m_meno) == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		*/
+
 		if (m_priezvisko == other.m_priezvisko && m_meno == other.m_meno) {
 			return true;
 		}

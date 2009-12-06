@@ -19,7 +19,8 @@
  */
 
 /**
- * \file Deklarácia a definícia AVL stromu.
+ * \file
+ * Deklarácia a definícia AVL stromu.
  */
 
 #ifndef  AVLTREE_H
@@ -33,6 +34,9 @@
 #include "Comparator.h"
 #include "serialization.h"
 
+/**
+ * Údajová štruktúra AVL strom.
+ */
 template < typename DataT,
 	typename KeyT,
 	template < typename T, typename U > class ComparatorT >
@@ -42,17 +46,43 @@ public:
 	// -------------------------------- Iterator --------------------------------
 	class Iterator;
 
+	/** Vytvorenie AVL stromu. */
 	AVLTree(): m_rootNode(NULL), m_count(0) {};
+
+	/** Zrušenie AVL stromu */
 	~AVLTree()                      { deleteSubTree(m_rootNode);           };
+
+	/**
+	 * Vloženie prvku do stromu.
+	 * \throw DuplicateDataException
+	 */
 	void insert(const DataT &data)  { insertIntoSubTree(m_rootNode, data); };
+
+	/**
+	 * Vyhľadanie záznamu s daným kľúčom a vrátenie iterátoru na prechádzanie
+	 * záznamu.
+	 */
 	Iterator find(const KeyT &key)  { return Iterator(this, key);          };
+
+	/** Vráti iterátor na prechádzanie záznamov stromu. */
 	Iterator iterator()             { return Iterator(this);               };
+
+	/** Odstránenie prvku \a data zo stromu. */
 	bool remove(const DataT &data);
+
+	/** Vráti \e true ak strom obsahuje kľúč \a key. */
 	bool hasKey(const KeyT &key);
+
+	/** Vráti \e true ak strom dáta s primárnym kľúčom \a data */
 	bool hasValue(const DataT &data);
+
+	/** Vráti počet prvkov v strome. */
 	int count() {return m_count;};
+
+	/** Vymazanie prvkov a dát prvkov. */
 	void deleteData();
 
+	/** Serializácia pomocou boost-u. */
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int &)
 	{

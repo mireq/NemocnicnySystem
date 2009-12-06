@@ -19,6 +19,11 @@
  * =====================================================================================
  */
 
+/**
+ * \file
+ * Deklarácia hospitalizácie.
+ */
+
 #ifndef  HOSPITALIZACIA_H
 #define  HOSPITALIZACIA_H
 

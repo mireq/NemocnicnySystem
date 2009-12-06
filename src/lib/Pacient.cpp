@@ -15,14 +15,12 @@
  */
 
 /**
- * \file Definícia pacienta.
+ * \file
+ * Definícia pacienta.
  */
 
 #include "Hospitalizacia.h"
-
 #include "Pacient.h"
-
-#include <QDebug>
 
 Pacient::Pacient()
 	: m_poistovna(0),
@@ -217,6 +215,9 @@ bool Pacient::isValid() const
 }
 
 
+/**
+ * Výpis pacienta do výstupného streamu.
+ */
 std::ostream &operator << (std::ostream &os, Pacient &pacient)
 {
 	os << pacient.m_rodCislo << pacient.m_meno;

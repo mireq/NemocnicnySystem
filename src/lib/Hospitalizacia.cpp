@@ -14,6 +14,11 @@
  * =====================================================================================
  */
 
+/**
+ * \file
+ * Definícia hospitalizácie.
+ */
+
 #include "Hospitalizacia.h"
 #include "Nemocnica.h"
 
@@ -82,6 +87,9 @@ bool Hospitalizacia::isValid() const
 }
 
 
+/**
+ * Výpis hospitalizácie do výstupného streamu.
+ */
 std::ostream &operator << (std::ostream &os, Hospitalizacia &hospitalizacia)
 {
 	os << "Hospitalizacia" << std::endl;

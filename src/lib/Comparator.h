@@ -18,29 +18,41 @@
  */
 
 /**
- * \file Deklarácia štandardného komparátora.
+ * \file
+ * Deklarácia štandardného komparátora.
  */
 
 #ifndef  COMPARATOR_H
 #define  COMPARATOR_H
 
-
+/**
+ * Základné enumeračné typy komparátora.
+ */
 class ComparatorBase
 {
 public:
+	/**
+	 * Typy porovnania.
+	 */
 	enum ComparisonType {
-		Lt       = -1,
-		Eql      = 0,
-		Gt       = 1,
-		ExactEql = 2
+		Lt       = -1, /**< Menšie než */
+		Eql      = 0,  /**< Rovnaké (podľa kľúča) */
+		Gt       = 1,  /**< Väčšie než */
+		ExactEql = 2   /**< Rovnaké (podľa primárneho kľúča) */
 	};
 };
 
+/**
+ * Štandardný komparátor pre porovnanie dvoch objektov, ktoré majú operácie <, >
+ * a ==.
+ */
 template <typename DataT, typename KeyT>
 class Comparator: public ComparatorBase
 {
-	//int operator()(DataT a, KeyT b, typename AVLTree<DataT, KeyT, ::Comparator>::ComparisonType type);
 public:
+	/**
+	 * Porovnanie ovjektu DataT a KeyT.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		KeyT b,
@@ -72,32 +84,49 @@ ComparatorBase::ComparisonType
 	}
 }
 
-
+/**
+ * Porovnávanie rodných čísel pacientov.
+ */
 template <typename DataT, typename KeyT>
 class PacientRodCisComparator: public Comparator<DataT, KeyT>
 {
 public:
+	/**
+	 * Porovnanie pacienta a rodného čísla.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		const KeyT &b,
 		ComparatorBase::ComparisonType type);
 
+	/**
+	 * Porovnanie dvoch pacientov na základe ich rodných čísel.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		DataT b,
 		ComparatorBase::ComparisonType type);
 };
 
-
+/**
+ * Porovnanie pacientov v prvom rade podľa mena a pri použití
+ * ComparatorBase::ExactEql porovnáva pri rovnakých menách aj rodné čísla.
+ */
 template <typename DataT, typename KeyT>
 class PacientMenoComparator: public Comparator<DataT, KeyT>
 {
 public:
+	/**
+	 * Porovnanie pacienta a mena.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		const KeyT &b,
 		ComparatorBase::ComparisonType type);
 
+	/**
+	 * Porovnanie dvoch pacientov podľa mien.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		DataT b,
@@ -105,15 +134,25 @@ public:
 };
 
 
+/**
+ * Porovnanie pacientov podľa poisťovne. Pri použití ComparatorBase::ExactEql sa
+ * buden najskôr porovnávať poisťovňa potom rodné číslo.
+ */
 template <typename DataT, typename KeyT>
 class PacientPoistovnaComparator: public Comparator<DataT, KeyT>
 {
 public:
+	/**
+	 * Porovnanie pacienta s poisťovňou.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		KeyT b,
 		ComparatorBase::ComparisonType type);
 
+	/**
+	 * Porovnanie dvoch pacientov podľa poisťovní.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		DataT b,
@@ -121,15 +160,24 @@ public:
 };
 
 
+/**
+ * Porovnanie nemocnice podľa názvu.
+ */
 template <typename DataT, typename KeyT>
 class NemocnicaNazovComparator: public Comparator<DataT, KeyT>
 {
 public:
+	/**
+	 * Porovnanie nemocnice a názvu nemocnice.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		const KeyT &b,
 		ComparatorBase::ComparisonType type);
 
+	/**
+	 * Porovnanie dvoch nemocníc.
+	 */
 	ComparatorBase::ComparisonType operator()(
 		DataT a,
 		DataT b,

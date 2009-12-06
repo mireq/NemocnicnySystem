@@ -19,12 +19,18 @@
  * =====================================================================================
  */
 
+/**
+ * \file
+ * Deklarácia generátora náhodných hospitalizácií.
+ */
+
 #ifndef  DATAGENERATOR_H
 #define  DATAGENERATOR_H
 
 #include <QVector>
 #include <QPair>
 #include <QDate>
+#include <QChar>
 
 #include "Meno.h"
 #include "RodCis.h"
@@ -44,6 +50,11 @@ public:
 	static RodCis nahodneRodCis();
 	static QDate nahodnyDatumNar();
 	static int nahodnaPoistovna();
+private:
+	enum {PocetSpoluhlasok = 24};
+	enum {PocetSamohlasok = 12};
+	static const QChar spoluhlasky[PocetSpoluhlasok];
+	static const QChar samohlasky[PocetSamohlasok];
 };
 
 #endif   /* ----- #ifndef DATAGENERATOR_H  ----- */

@@ -19,7 +19,8 @@
  */
 
 /**
- * \file Deklarácia rodného čísla.
+ * \file
+ * Deklarácia rodného čísla.
  */
 
 #ifndef  RODCIS_H

@@ -23,8 +23,6 @@
 #include <QItemSelectionModel>
 #include <QHeaderView>
 
-#include <QDebug>
-
 #include "PacientInfo.h"
 
 PacientInfoWidget::PacientInfoWidget(QWidget *parent)

@@ -52,6 +52,7 @@ set(nemsys_SRCS
 	src/model/Nemocnica.cpp
 	src/model/NemocnicnySystem.cpp
 	src/model/PacientiInfoModel.cpp
+	src/ui/GeneratorSettings.cpp
 	src/ui/HospitalizaciaEdit.cpp
 	src/ui/HospitalizaciaWizard.cpp
 	src/ui/MainWindow.cpp
@@ -66,6 +67,7 @@ set(nemsys_SRCS
 set(nemsys_MOC_HDRS
 	src/model/NemocnicnySystem.h
 	src/model/PacientiInfoModel.h
+	src/ui/GeneratorSettings.h
 	src/ui/HospitalizaciaEdit.h
 	src/ui/HospitalizaciaWizard.h
 	src/ui/MainWindow.h

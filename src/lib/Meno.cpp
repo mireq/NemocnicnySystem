@@ -15,7 +15,8 @@
  */
 
 /**
- * \file Definícia mena pacienta.
+ * \file
+ * Definícia mena pacienta.
  */
 
 #include "Meno.h"
@@ -49,6 +50,9 @@ QString Meno::toString() const
 }
 
 
+/**
+ * Výpis mena do výstupného streamu.
+ */
 std::ostream &operator << (std::ostream &os, Meno &meno)
 {
 	os << "Meno   " << meno.m_meno.toUtf8().data() << std::endl << "Priezv " << meno.m_priezvisko.toUtf8().data() << std::endl;

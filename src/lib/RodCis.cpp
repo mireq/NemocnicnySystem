@@ -15,7 +15,8 @@
  */
 
 /**
- * \file Definícia rodného čísla.
+ * \file
+ * Definícia rodného čísla.
  */
 
 #include "RodCis.h"
@@ -101,6 +102,9 @@ QString RodCis::toString() const
 }
 
 
+/**
+ * Výpis rodného čísla do výstupného streamu.
+ */
 std::ostream &operator << (std::ostream &os, RodCis &rodCislo)
 {
 	os << "Rodne cislo: " << rodCislo.m_rodCislo << std::endl;

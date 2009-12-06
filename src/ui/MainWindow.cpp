@@ -15,6 +15,7 @@
  */
 
 #include "DataGenerator.h"
+#include "GeneratorSettings.h"
 #include "HospitalizaciaWizard.h"
 #include "MainWindow.h"
 #include "NemocnicaVyber.h"
@@ -31,6 +32,7 @@
 #include <QFileDialog>
 #include <QDate>
 #include <QTextDocument>
+#include <QTextTable>
 #include <Qt>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -175,19 +177,21 @@ void MainWindow::generuj()
 		return;
 	}
 
+	GeneratorSettings settingsDialog(this);
+	if (settingsDialog.exec() != QDialog::Accepted) {
+		return;
+	}
+
 	actionDesktop->setChecked(true);
 	prepniAktualnyPohlad();
 
 	setUpdatesEnabled(false);
-	/*try {
-	}
-	catch (...) {
-	}*/
-	const QVector<Pacient *> pacienti = DataGenerator::generujPacientov(1000);
+
+	const QVector<Pacient *> pacienti = DataGenerator::generujPacientov(settingsDialog.pacientov());
 	foreach (Pacient *pacient, pacienti) {
 		m_nemocnicnySystem.pridajPacienta(pacient);
 	}
-	const QVector<Nemocnica *> nemocnice = DataGenerator::generujNahodneNemocnice(10);
+	const QVector<Nemocnica *> nemocnice = DataGenerator::generujNahodneNemocnice(settingsDialog.nemocnic());
 	foreach (Nemocnica *nemocnica, nemocnice) {
 		m_nemocnicnySystem.pridajNemocnicu(nemocnica);
 	}
@@ -195,6 +199,7 @@ void MainWindow::generuj()
 	for (QVector<QPair<Pacient *, Hospitalizacia> >::const_iterator it = hospitalizacie.begin(); it != hospitalizacie.end(); ++it) {
 		m_nemocnicnySystem.hospitalizuj(it->second.nemocnica(), it->first, it->second);
 	}
+
 	setUpdatesEnabled(true);
 	aktualizujNemocnice();
 }
@@ -588,7 +593,7 @@ void MainWindow::zobrazHospitalizacie()
 
 void MainWindow::zobrazPodklady()
 {
-	podkladyDisplay->setText("");
+	podkladyDisplay->clear();
 
 	QDate zac = mesiacEdit->date().addDays(-mesiacEdit->date().day() + 1);
 	QDate kon = zac.addDays(zac.daysInMonth() - 1);
@@ -609,6 +614,8 @@ void MainWindow::zobrazPodklady()
 		}
 	}
 
+	podkladyDisplay->setUpdatesEnabled(false);
+
 	QString text = QString::fromUtf8("<h2>Poisťovne</h2><table border=1 cellspacing=0><tr><th>Kód poisťovne</th><th>Dní hospitalizácie</th></tr>");
 	for (int i = 0; i < 100; ++i) {
 		if (poistovneDni[i] == 0) {
@@ -623,6 +630,57 @@ void MainWindow::zobrazPodklady()
 	}
 	text += QString::fromUtf8("</table>");
 	podkladyDisplay->setText(text);
+
+	/*QTextTableFormat tableFormat;
+	QVector<QTextLength> constraints;
+	constraints << QTextLength(QTextLength::PercentageLength, 30);
+	constraints << QTextLength(QTextLength::PercentageLength, 70);
+
+	tableFormat.setColumnWidthConstraints(constraints);
+	tableFormat.setCellSpacing(-1);
+	tableFormat.setCellPadding(0);
+	tableFormat.setBorder(1);
+	tableFormat.setBorderBrush(QBrush(QColor(127, 127, 127)));
+	tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Solid);
+	tableFormat.setHeaderRowCount(1);
+
+	QTextCharFormat headFormat;
+	headFormat.setFontWeight(QFont::Bold);
+
+	QTextCursor cursor = podkladyDisplay->textCursor();
+	cursor.insertHtml(QString::fromUtf8("<h2>Poisťovne</h2>"));
+	//cursor.insertBlock();
+	QTextTable *poistovneTable = cursor.insertTable(1, 2, tableFormat);
+	cursor.insertText(QString::fromUtf8("Kód poisťovne"), headFormat);
+	cursor.movePosition(QTextCursor::NextCell);
+	cursor.insertText(QString::fromUtf8("Dní hospitalizácie"), headFormat);
+	for (int i = 0; i < 100; ++i) {
+		if (poistovneDni[i] == 0) {
+			continue;
+		}
+		poistovneTable->appendRows(1);
+		cursor.movePosition(QTextCursor::PreviousCell);
+		cursor.insertText(QVariant(i).toString());
+		cursor.movePosition(QTextCursor::NextCell);
+		cursor.insertText(QVariant(poistovneDni[i]).toString());
+	}
+
+	cursor.movePosition(QTextCursor::End);
+
+	cursor.insertHtml(QString::fromUtf8("<h2>Hospitalizovaní pacienti</h2>"));
+
+	QTextTable *pacientiTable = cursor.insertTable(1, 2, tableFormat);
+	cursor.insertText("Rodné číslo", headFormat);
+	cursor.movePosition(QTextCursor::NextCell);
+	cursor.insertText("Meno", headFormat);
+	foreach (Pacient *pacient, pacienti) {
+		pacientiTable->appendRows(1);
+		cursor.movePosition(QTextCursor::PreviousCell);
+		cursor.insertText(pacient->rodCislo().toString());
+		cursor.movePosition(QTextCursor::NextCell);
+		cursor.insertText(pacient->meno().toString());
+	}*/
+	podkladyDisplay->setUpdatesEnabled(true);
 }
 
 

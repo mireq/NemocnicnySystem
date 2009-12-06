@@ -18,24 +18,65 @@
  * =====================================================================================
  */
 
+/**
+ * \file
+ * Definícia iterátora pre prechádzanie záznamov AVL stromu.
+ */
+
 #ifndef  ITERATOR_H
 #define  ITERATOR_H
 
 #include <list>
 
+/**
+ * Iterátor na prechádzanie záznamov AVL stromu.
+ */
 template <typename DataT,
 	typename KeyT,
 	template < typename T, typename U > class ComparatorT >
 class AVLTree<DataT, KeyT, ComparatorT>::Iterator
 {
 public:
+	/**
+	 * Zrušenie iterátora.
+	 */
 	~Iterator();
+
+	/**
+	 * Prechod na nasledujúcu položku a získanie dát aktuálnej položky.
+	 */
 	DataT next();
+
+	/**
+	 * Ak má iterátor nasledujúcu hodnotu vráti \e true.
+	 */
 	bool hasNext();
+
+	/**
+	 * Prechod na predchádzajúcu položku a vrátenie dát aktuálnej položky.
+	 */
 	DataT previous();
+
+	/**
+	 * Ak položka má svojho predchodcu vráti \e true.
+	 */
 	bool hasPrevious();
+
+	/**
+	 * Presun iterátora na prvú položku.
+	 */
 	void toFirst();
+
+	/**
+	 * Presun iterátora na poslednú položku.
+	 */
 	void toLast();
+
+	/**
+	 * Získanie poradia aktuálneho záznamu. Ak sa s iterátorom pracuje odzadu
+	 * (toLast()) bude vraciať zápornú hodnotu reprezentujúcu počet položiek od
+	 * konca.
+	 */
 	int currentItem() const;
 
 private:

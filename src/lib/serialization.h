@@ -14,6 +14,11 @@
  * =====================================================================================
  */
 
+/**
+ * \file
+ * Serializácia dát do súboru.
+ */
+
 
 #ifndef  SERIALIZATION_H
 #define  SERIALIZATION_H
@@ -23,6 +28,8 @@
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_free.hpp>
@@ -34,18 +41,35 @@
 #include <QDate>
 
 
+/**
+ * Verzia serializovaného / deserializovaného súboru.
+ */
 typedef unsigned int SerializationVersion;
 
+/**
+ * Trieda pre serializáciu a deserializáciu objektov.
+ */
 template <class T>
 class Serializer {
 public:
 	// -------------------------------- FileAccessException --------------------------------
+	/**
+	 * Výnimka vyvolaná pri chybe prístupu k súboru pri čítani / zápise.
+	 */
 	class FileAccessException {
 	public:
+
+		/**
+		 * Typ prístupu k súboru, pri ktorom došlo k chybe.
+		 */
 		enum AccessType {
-			Read  = 0,
-			Write = 1
+			Read  = 0, /**< Chyba pri čítaní. */
+			Write = 1  /**< Chyba pri zápise. */
 		};
+
+		/**
+		 * \return Typ prístupu, pri ktorom došlo k chybe.
+		 */
 		AccessType type() const {return m_type; };
 
 	private:
@@ -56,6 +80,9 @@ public:
 	};
 
 	// -------------------------------- FileFormatException --------------------------------
+	/**
+	 * Výnimka vyvolaná pri chybnom formáte načítavaného súboru.
+	 */
 	class FileFormatException {
 	private:
 		FileFormatException() {};
@@ -63,25 +90,33 @@ public:
 	friend class Serializer;
 	};
 
-	static void serialize(T &trieda, const char *name, const char *fileName)
+	/**
+	 * Serializácia triedy, ktorá bude vo výstupnom súbore \a fileName
+	 * identifikovaná menom \a name.
+	 */
+	static void serialize(const T &objekt, const char *name, const char *fileName)
 	{
 		std::ofstream ofs(fileName);
 		if (!ofs.is_open()) {
 			throw FileAccessException(FileAccessException::Write);
 		}
-		boost::archive::xml_oarchive oa(ofs);
-		oa << boost::serialization::make_nvp(name, trieda);
+		boost::archive::binary_oarchive oa(ofs);
+		oa << boost::serialization::make_nvp(name, objekt);
 	}
 
-	static void unserialize(T &trieda, const char *name, const char *fileName)
+	/**
+	 * Deserializácia objektu \a objekt, ktorý je v súbore \a fileName evidovaný
+	 * pod menom \a name.
+	 */
+	static void unserialize(T &objekt, const char *name, const char *fileName)
 	{
 		std::ifstream ifs(fileName);
 		if (!ifs.is_open()) {
 			throw FileAccessException(FileAccessException::Read);
 		}
 		try {
-			boost::archive::xml_iarchive ia(ifs);
-			ia >> boost::serialization::make_nvp(name, trieda);
+			boost::archive::binary_iarchive ia(ifs);
+			ia >> boost::serialization::make_nvp(name, objekt);
 		}
 		catch (boost::archive::archive_exception &) {
 			throw FileFormatException();
@@ -93,8 +128,11 @@ namespace boost {
 namespace serialization {
 
 
+/**
+ * Serializácia QString-u.
+ */
 template<class Archive>
-inline void save(Archive &archive, const QString &string, const unsigned int &)
+inline void save(Archive &archive, const QString &string, const unsigned int &/* version */)
 {
 	QByteArray text = string.toUtf8();
 	int length = text.length();
@@ -104,8 +142,11 @@ inline void save(Archive &archive, const QString &string, const unsigned int &)
 }
 
 
+/**
+ * Deserializácia QString-u.
+ */
 template<class Archive>
-inline void load(Archive &archive, QString &string, const unsigned int &)
+inline void load(Archive &archive, QString &string, const unsigned int &/* version */)
 {
 	int length;
 	archive >> make_nvp("length", length);
@@ -119,8 +160,11 @@ inline void load(Archive &archive, QString &string, const unsigned int &)
 }
 
 
+/**
+ * Serializácia QDate-u*
+ */
 template<class Archive>
-inline void save(Archive &archive, const QDate &date, const unsigned int &)
+inline void save(Archive &archive, const QDate &date, const unsigned int &/* version */)
 {
 	bool valid = date.isValid();
 	int day = date.toJulianDay();
@@ -130,8 +174,11 @@ inline void save(Archive &archive, const QDate &date, const unsigned int &)
 }
 
 
+/**
+ * Deserializácia QDate-u.
+ */
 template<class Archive>
-inline void load(Archive &archive, QDate &date, const unsigned int &)
+inline void load(Archive &archive, QDate &date, const unsigned int &/* version */)
 {
 	bool valid = false;
 	int day = 0;
@@ -145,8 +192,11 @@ inline void load(Archive &archive, QDate &date, const unsigned int &)
 }
 
 
+/**
+ * Serializácia QStringList-u.
+ */
 template<class Archive>
-inline void save(Archive &archive, const QStringList &list, const unsigned int &)
+inline void save(Archive &archive, const QStringList &list, const unsigned int &/* version */)
 {
 	int size = list.size();
 
@@ -157,8 +207,11 @@ inline void save(Archive &archive, const QStringList &list, const unsigned int &
 }
 
 
+/**
+ * Deserializácia QStringList-u.
+ */
 template<class Archive>
-inline void load(Archive &archive, QStringList &list, const unsigned int &)
+inline void load(Archive &archive, QStringList &list, const unsigned int &/* version */)
 {
 	int size = 0;
 	list.clear();
@@ -172,8 +225,11 @@ inline void load(Archive &archive, QStringList &list, const unsigned int &)
 }
 
 
+/**
+ * Serializácia QList-u.
+ */
 template<class Archive, class T>
-inline void save(Archive &archive, const QList<T> &l, const unsigned int /* version */)
+inline void save(Archive &archive, const QList<T> &l, const unsigned int &/* version */)
 {
 	int count = l.size();
 	archive << BOOST_SERIALIZATION_NVP(count);
@@ -183,8 +239,11 @@ inline void save(Archive &archive, const QList<T> &l, const unsigned int /* vers
 }
 
 
+/**
+ * Deserializácia QList-u.
+ */
 template<class Archive, class T>
-inline void load(Archive &archive, QList<T> &l, const unsigned int /* version */)
+inline void load(Archive &archive, QList<T> &l, const unsigned int &/* version */)
 {
 	l.clear();
 	int count = 0;
@@ -197,8 +256,11 @@ inline void load(Archive &archive, QList<T> &l, const unsigned int /* version */
 }
 
 
+/**
+ * Serializácia a deserializácia QList-u.
+ */
 template<class Archive, class T>
-inline void serialize(Archive &archive, QList<T> &l, const unsigned int file_version)
+inline void serialize(Archive &archive, QList<T> &l, const unsigned int &file_version)
 {
     boost::serialization::split_free(archive, l, file_version);
 }

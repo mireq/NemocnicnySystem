@@ -19,7 +19,8 @@
  */
 
 /**
- * \file Deklarácia pacienta.
+ * \file
+ * Deklarácia pacienta.
  */
 
 #ifndef  PACIENT_H

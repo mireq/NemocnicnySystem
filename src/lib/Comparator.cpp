@@ -15,7 +15,8 @@
  */
 
 /**
- * \file Implementácia štandardného komparátora.
+ * \file
+ * Implementácia štandardného komparátora.
  */
 
 #include "Comparator.h"
@@ -215,7 +216,8 @@ ComparatorBase::ComparisonType
 		Nemocnica *b,
 		ComparatorBase::ComparisonType type)
 {
-	if (a->nazov() < b->nazov()) {
+	int cmp = a->nazov().localeAwareCompare(b->nazov());
+	if (cmp < 0) {
 		if (type == Lt) {
 			return Eql;
 		}
@@ -223,7 +225,7 @@ ComparatorBase::ComparisonType
 			return Lt;
 		}
 	}
-	if (a->nazov() > b->nazov()) {
+	if (cmp > 0) {
 		if (type == Gt) {
 			return Eql;
 		}
@@ -242,7 +244,8 @@ ComparatorBase::ComparisonType
 		const QString &b,
 		ComparatorBase::ComparisonType type)
 {
-	if (a->nazov() < b) {
+	int cmp = a->nazov().localeAwareCompare(b);
+	if (cmp < 0) {
 		if (type == Lt) {
 			return Eql;
 		}
@@ -250,7 +253,7 @@ ComparatorBase::ComparisonType
 			return Lt;
 		}
 	}
-	if (a->nazov() > b) {
+	if (cmp > 0) {
 		if (type == Gt) {
 			return Eql;
 		}
